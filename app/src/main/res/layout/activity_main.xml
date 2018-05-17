@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context="com.example.akb05.project.MainActivity">
 
-
     <EditText
         android:id="@+id/etid"
         android:layout_width="wrap_content"
