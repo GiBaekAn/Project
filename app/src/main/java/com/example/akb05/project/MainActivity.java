@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         if(mAuth.getCurrentUser() != null){
             Log.d(TAG, "Current User:" + mAuth.getCurrentUser().getEmail());
-            // 만약 회원이라면 메인으로 이동한다.
         } else {
             Log.d(TAG, "Log out State");
         }
@@ -67,6 +66,9 @@ public class MainActivity extends AppCompatActivity {
                 //이메일과 비밀번호를 확인하는 부분
                 if(isValidEmail(email) && isValidPasswd(passwd)){
                     signinAccount(email, passwd);
+                    // 로그인 클릭 동시에 메인메뉴로 이동
+                    Intent mainintent = new Intent(getApplicationContext(), Mainpage.class);
+                    startActivity(mainintent);
                 } else {
                     Toast.makeText(MainActivity.this,
                             "Check Email or Password",

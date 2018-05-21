@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AbsoluteLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/editText"
+        android:layout_width="123dp"
+        android:layout_height="wrap_content"
+        android:layout_x="34dp"
+        android:layout_y="56dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="편의점이름"
+        android:textSize="24sp"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="79dp" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_x="140dp"
+        android:layout_y="0dp"
+        android:text="메뉴 상세"
+        android:textSize="30sp"
+        tools:layout_editor_absoluteX="104dp"
+        tools:layout_editor_absoluteY="31dp" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_x="34dp"
+        android:layout_y="122dp"
+        android:adjustViewBounds="true"
+        android:maxHeight="150dp"
+        android:maxWidth="150dp"
+        android:scaleType="fitXY"
+        app:srcCompat="@drawable/foodimage1"
+        tools:layout_editor_absoluteX="35dp"
+        tools:layout_editor_absoluteY="110dp" />
+
+    <TextView
+        android:id="@+id/menuname"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_x="38dp"
+        android:layout_y="287dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="제품 이름 :"
+        tools:layout_editor_absoluteX="32dp"
+        tools:layout_editor_absoluteY="295dp" />
+
+    <TextView
+        android:id="@+id/menuprice"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_x="39dp"
+        android:layout_y="355dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="제품 가격 :"
+        tools:layout_editor_absoluteX="32dp"
+        tools:layout_editor_absoluteY="295dp" />
+
+    <TextView
+        android:id="@+id/namedetail"
+        android:layout_width="218dp"
+        android:layout_height="48dp"
+        android:layout_x="126dp"
+        android:layout_y="285dp"
+        android:text="TextView"
+        tools:layout_editor_absoluteX="125dp"
+        tools:layout_editor_absoluteY="285dp" />
+
+    <TextView
+        android:id="@+id/pricedetail"
+        android:layout_width="220dp"
+        android:layout_height="52dp"
+        android:layout_x="126dp"
+        android:layout_y="353dp"
+        android:text="TextView"
+        tools:layout_editor_absoluteX="166dp"
+        tools:layout_editor_absoluteY="345dp" />
+
+</AbsoluteLayout>

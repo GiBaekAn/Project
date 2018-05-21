@@ -20,6 +20,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+    <activity android:name=".Mainpage"></activity>
+        <activity android:name=".MenuDetails"></activity>
+        <activity android:name=".InputMenu"></activity>
     </application>
 
 </manifest>
