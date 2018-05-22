@@ -45,7 +45,7 @@
         tools:layout_editor_absoluteY="110dp" />
 
     <TextView
-        android:id="@+id/menuname"
+        android:id="@+id/hotdeal"
         android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:layout_x="38dp"

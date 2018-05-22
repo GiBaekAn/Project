@@ -79,16 +79,18 @@ public class MainActivity extends AppCompatActivity {
         create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String email = etid.getText().toString().trim();
-                String passwd = etpw.getText().toString().trim();
-                Log.d(TAG, "Email:" + email + " Password:" + passwd);
-                if(isValidEmail(email) && isValidPasswd(passwd)){
-                    createAccount(email, passwd);
-                } else {
-                    Toast.makeText(MainActivity.this,
-                            "Check Email or Password",
-                            Toast.LENGTH_LONG).show();
-                }
+                Intent intent = new Intent(getApplicationContext(),CreateAccount.class);
+                startActivity(intent);
+//                String email = etid.getText().toString().trim();
+//                String passwd = etpw.getText().toString().trim();
+//                Log.d(TAG, "Email:" + email + " Password:" + passwd);
+//                if(isValidEmail(email) && isValidPasswd(passwd)){
+//                    createAccount(email, passwd);
+//                } else {
+//                    Toast.makeText(MainActivity.this,
+//                            "Check Email or Password",
+//                            Toast.LENGTH_LONG).show();
+//                }
             }
         });
     }
@@ -104,35 +106,35 @@ public class MainActivity extends AppCompatActivity {
                 else
                     return false;
             }
+    }
+    //Email확인
+    private boolean isValidEmail(String str){
+        if(str == null || TextUtils.isEmpty(str)){
+            return false;
+        } else {
+            return Patterns.EMAIL_ADDRESS.matcher(str).matches();
         }
-        //Email확인
-        private boolean isValidEmail(String str){
-            if(str == null || TextUtils.isEmpty(str)){
-                return false;
-            } else {
-                return Patterns.EMAIL_ADDRESS.matcher(str).matches();
-            }
-        }
-        private void createAccount(String email, String passwd){
-
-            mAuth.createUserWithEmailAndPassword(email, passwd)
-                    .addOnCompleteListener(this,
-                            new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    Log.d(TAG, "Create Account:" + task.isSuccessful());
-                                    if(task.isSuccessful()){
-                                        Log.d(TAG, "Account Create Complete");
-                                        Log.d(TAG, "Current User:" + mAuth.getCurrentUser().getEmail());
-
-                                    }else {
-                                        Toast.makeText(MainActivity.this,
-                                                "Create Account Failed", Toast.LENGTH_LONG).show();
-                                    }
-                                }
-                            });
-
-        }
+    }
+//    private void createAccount(String email, String passwd){
+//
+//        mAuth.createUserWithEmailAndPassword(email, passwd)
+//                .addOnCompleteListener(this,
+//                        new OnCompleteListener<AuthResult>() {
+//                            @Override
+//                            public void onComplete(@NonNull Task<AuthResult> task) {
+//                                Log.d(TAG, "Create Account:" + task.isSuccessful());
+//                                if(task.isSuccessful()){
+//                                    Log.d(TAG, "Account Create Complete");
+//                                    Log.d(TAG, "Current User:" + mAuth.getCurrentUser().getEmail());
+//
+//                                }else {
+//                                    Toast.makeText(MainActivity.this,
+//                                            "Create Account Failed", Toast.LENGTH_LONG).show();
+//                                }
+//                            }
+//                        });
+//
+//    }
     private void signinAccount(String email, String passwd){
 
         //로그내용
