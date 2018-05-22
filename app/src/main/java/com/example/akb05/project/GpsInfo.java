@@ -3,6 +3,7 @@ package com.example.akb05.project;
 /**
  * Created by dong on 2018-05-22.
  */
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 
 import android.app.Service;
@@ -87,6 +88,7 @@ public class GpsInfo extends Service implements LocationListener {
 
 
 
+    @SuppressLint("MissingPermission")
     public Location getLocation() {
 
         try {
