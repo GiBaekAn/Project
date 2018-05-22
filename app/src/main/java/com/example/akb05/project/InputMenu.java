@@ -20,6 +20,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -30,6 +31,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * Created by dong on 2018-05-21.
@@ -45,6 +47,7 @@ public class InputMenu extends Activity implements View.OnClickListener {
     CalendarView cView;
     TimePicker tPicker;
     EditText et_foodname, et_saledprice, et_price, et_storename;
+    Button btn;
 
     private String absoultePath;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -52,12 +55,20 @@ public class InputMenu extends Activity implements View.OnClickListener {
 
     public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setTitle("상품 등록하기");
     setContentView(R.layout.inputmenu);
 
     inputimg = findViewById(R.id.inputimg);
     cView = findViewById(R.id.cv);
     tPicker = findViewById(R.id.tp);
+
+    et_foodname = findViewById(R.id.name);
+    et_saledprice = findViewById(R.id.saledprice);
+    et_price = findViewById(R.id.price);
+    et_storename = findViewById(R.id.storename);
+    btn = findViewById(R.id.button);
+
+
+    final long a=1;
 
     final String[] nameofstore = {"GS25","미니스톱","CU","세븐일레븐","With me","기타"};
     Spinner spinner = findViewById(R.id.spinner);
@@ -65,8 +76,23 @@ public class InputMenu extends Activity implements View.OnClickListener {
     adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,nameofstore);
     spinner.setAdapter(adapter);
 
-    foodDTO food = new foodDTO()
 
+
+    btn.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            String foodname = et_foodname.getText().toString().trim();
+            String saledprice = et_saledprice.getText().toString().trim();
+            String price = et_price.getText().toString().trim();
+            String storename = et_storename.getText().toString().trim();
+            foodDTO food = new foodDTO(foodname,saledprice,price,a,a,a,storename);
+            databaseReference.child("food").push().setValue(food);
+            Toast.makeText(InputMenu.this,
+                    "등록되었습니다.",
+                    Toast.LENGTH_LONG).show();
+            finish();
+        }
+    });
     }
 
     public void doTakePhotoAction(){ // 카메라 촬영 후 이미지 가져오기
