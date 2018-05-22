@@ -12,9 +12,18 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CalendarView;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.TimePicker;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -33,14 +42,30 @@ public class InputMenu extends Activity implements View.OnClickListener {
 
     private Uri mImageCaptureUri;
     ImageButton inputimg;
+    CalendarView cView;
+    TimePicker tPicker;
+    EditText et_foodname, et_saledprice, et_price, et_storename;
+
     private String absoultePath;
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private DatabaseReference databaseReference = database.getReference();
 
     public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
+    setTitle("상품 등록하기");
     setContentView(R.layout.inputmenu);
-    inputimg = findViewById(R.id.inputimg);
 
+    inputimg = findViewById(R.id.inputimg);
+    cView = findViewById(R.id.cv);
+    tPicker = findViewById(R.id.tp);
+
+    final String[] nameofstore = {"GS25","미니스톱","CU","세븐일레븐","With me","기타"};
+    Spinner spinner = findViewById(R.id.spinner);
+    ArrayAdapter<String> adapter;
+    adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,nameofstore);
+    spinner.setAdapter(adapter);
+
+    foodDTO food = new foodDTO()
 
     }
 
