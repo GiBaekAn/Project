@@ -30,6 +30,11 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:15.0.1'
     compile 'com.google.android.gms:play-services-maps:15.0.1'
     compile 'com.google.android.gms:play-services-location:15.0.1'
+    compile 'gun0912.ted:tedpermission:1.0.2'
+    compile 'com.android.support:appcompat-v7:26.0.0+'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.naver.maps.open:naver-map-api:2.1.2@aar'
+    testCompile 'junit:junit:4.12'
 }
 
 

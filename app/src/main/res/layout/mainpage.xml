@@ -33,18 +33,6 @@
         android:text="근처 편의점"
         android:textSize="18sp" />
 
-    <com.google.android.gms.maps.MapView
-        xmlns:map="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.MapFragment"
-        android:layout_width="320dp"
-        android:layout_height="191dp"
-        android:layout_x="31dp"
-        android:layout_y="292dp"
-        map:cameraTargetLat="37.541"
-        map:cameraTargetLng="126.986"
-        map:cameraZoom="10" />
-
     <ImageButton
         android:id="@+id/menuimg"
         android:layout_width="wrap_content"
@@ -68,5 +56,15 @@
         android:text="메뉴 등록"
         tools:layout_editor_absoluteX="215dp"
         tools:layout_editor_absoluteY="49dp" />
+
+    <LinearLayout
+        android:id="@+id/mapcontainer"
+        android:layout_width="319dp"
+        android:layout_height="185dp"
+        android:layout_x="33dp"
+        android:layout_y="293dp"
+        android:orientation="horizontal"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="288dp"></LinearLayout>
 
 </AbsoluteLayout>
