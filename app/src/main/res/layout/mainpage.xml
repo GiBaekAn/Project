@@ -1,70 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
-<AbsoluteLayout
+<android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <HorizontalScrollView
+        android:id="@+id/horizontalScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="72dp"
+        android:layout_x="0dp"
+        android:layout_y="74dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        tools:layout_editor_absoluteX="0dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/menuimg"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_x="30dp"
+                android:layout_y="72dp"
+                android:adjustViewBounds="true"
+                android:maxHeight="150dp"
+                android:maxWidth="150dp"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/foodimage1"
+                tools:layout_editor_absoluteX="46dp"
+                tools:layout_editor_absoluteY="93dp" />
+
+            <ImageButton
+                android:id="@+id/imageButton"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                app:srcCompat="@drawable/common_google_signin_btn_icon_dark" />
+
+            <ImageButton
+                android:id="@+id/imageButton2"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/common_google_signin_btn_icon_light_normal" />
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
     <TextView
         android:id="@+id/hotdeal"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="27dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="59dp"
-        android:layout_marginTop="72dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
         android:layout_x="30dp"
         android:layout_y="29dp"
         android:text="HOT DEAL"
         android:textColor="@android:color/holo_red_dark"
         android:textSize="18sp"
-        tools:layout_editor_absoluteX="57dp"
-        tools:layout_editor_absoluteY="63dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/hotdeal"
         android:layout_below="@+id/hotdeal"
-        android:layout_marginTop="178dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="232dp"
         android:layout_x="30dp"
         android:layout_y="255dp"
         android:text="근처 편의점"
-        android:textSize="18sp" />
-
-    <ImageButton
-        android:id="@+id/menuimg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_x="30dp"
-        android:layout_y="72dp"
-        android:adjustViewBounds="true"
-        android:maxHeight="150dp"
-        android:maxWidth="150dp"
-        android:scaleType="fitXY"
-        app:srcCompat="@drawable/foodimage1"
-        tools:layout_editor_absoluteX="46dp"
-        tools:layout_editor_absoluteY="93dp" />
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/inputmenubtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
         android:layout_x="277dp"
         android:layout_y="12dp"
         android:text="메뉴 등록"
-        tools:layout_editor_absoluteX="215dp"
-        tools:layout_editor_absoluteY="49dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.806"
+        app:layout_constraintStart_toEndOf="@+id/hotdeal"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/mapcontainer"
-        android:layout_width="319dp"
-        android:layout_height="185dp"
-        android:layout_x="33dp"
-        android:layout_y="293dp"
+        android:layout_width="343dp"
+        android:layout_height="213dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_x="28dp"
+        android:layout_y="289dp"
         android:orientation="horizontal"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="288dp"></LinearLayout>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.52"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView"
+        app:layout_constraintVertical_bias="0.882">
 
-</AbsoluteLayout>
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

@@ -1,50 +1,31 @@
 package com.example.akb05.project;
 
 import android.content.Intent;
-import android.graphics.Rect;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.util.Log;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.Toast;
-import com.nhn.android.maps.NMapActivity;
-import com.nhn.android.maps.NMapCompassManager;
-import com.nhn.android.maps.NMapController;
-import com.nhn.android.maps.NMapLocationManager;
-import com.nhn.android.maps.NMapOverlay;
-import com.nhn.android.maps.NMapOverlayItem;
-import com.nhn.android.maps.NMapView;
-import com.nhn.android.maps.maplib.NGeoPoint;
-import com.nhn.android.maps.nmapmodel.NMapError;
-import com.nhn.android.maps.nmapmodel.NMapPlacemark;
-import com.nhn.android.mapviewer.overlay.NMapCalloutOverlay;
-import com.nhn.android.mapviewer.overlay.NMapMyLocationOverlay;
-import com.nhn.android.mapviewer.overlay.NMapOverlayManager;
-
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 /**
  * Created by dong on 2018-05-21.
  */
 
-public class Mainpage extends NMapActivity implements NMapView.OnMapStateChangeListener, NMapOverlayManager.OnCalloutOverlayListener{
+public class Mainpage extends FragmentActivity implements OnMapReadyCallback{
 
-    private final String CLIENT_ID = "0tU_PA1DvM2vDIXrd5fo";
-    private NMapView mMapView = null;
-    NMapController mMapController = null;
     LinearLayout MapContainer;
 
     ImageButton menuimg;
     Button inputmenubtn;
     // 오버레이 관리자
 
-    private NMapMyLocationOverlay mMyLocationOverlay;
-
-    private NMapLocationManager mMapLocationManager;
-
-    private NMapCompassManager mMapCompassManager;
-
+    GoogleMap mMap;
 
 
 
@@ -72,147 +53,24 @@ public class Mainpage extends NMapActivity implements NMapView.OnMapStateChangeL
             }
         });
 
-        mMapView = new NMapView(this);
-        mMapView.setApiKey(CLIENT_ID);
-        MapContainer.addView(mMapView);
-        mMapView.setClickable(true);
-        //mMapView.setBuiltInZoomControls(true,null);
-        super.setMapDataProviderListener(onDataProviderListener);
-
-        mMapView.setOnMapStateChangeListener(this);
-
+        SupportMapFragment mapFragment = (SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
     }
 
     @Override
-    public void onMapInitHandler(NMapView nMapView, NMapError nMapError) {
-        if(nMapError == null){
-            startMyLocation();
-        }else {
-            android.util.Log.e("NMAP","onMapInitHandler:error="+nMapError.toString());
-        }
-    }
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
 
-    private void startMyLocation() {
-        mMapLocationManager = new NMapLocationManager(this);
-        mMapLocationManager
-                .setOnLocationChangeListener(onMyLocationChangeListener);
+        LatLng ajou = new LatLng(37.279940, 127.043867);
 
-        boolean isMyLocationEnabled = mMapLocationManager
-                .enableMyLocation(true);
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(ajou).title("여기는 아주대학교");
 
-        if (!isMyLocationEnabled) {
-            Toast.makeText(
-                    Mainpage.this,
-                    "Please enable a My Location source in system settings",
-                    Toast.LENGTH_LONG).show();
-
-            Intent goToSettings = new Intent(
-                    Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            startActivity(goToSettings);
-            finish();
-        }else{
-        }
-    }
-
-    @Override
-    public void onMapCenterChange(NMapView nMapView, NGeoPoint nGeoPoint) {
+        mMap.addMarker(markerOptions);
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(ajou));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ajou,16));
 
     }
-
-    @Override
-    public void onMapCenterChangeFine(NMapView nMapView) {
-
-    }
-
-    @Override
-    public void onZoomLevelChange(NMapView nMapView, int i) {
-
-    }
-
-    @Override
-    public void onAnimationStateChange(NMapView nMapView, int i, int i1) {
-
-    }
-
-    @Override
-    public NMapCalloutOverlay onCreateCalloutOverlay(NMapOverlay nMapOverlay, NMapOverlayItem nMapOverlayItem, Rect rect) {
-        return null;
-    }
-    private final NMapActivity.OnDataProviderListener onDataProviderListener = new NMapActivity.OnDataProviderListener() {
-        @Override
-
-        public void onReverseGeocoderResponse(NMapPlacemark placeMark, NMapError errInfo) {
-            if (errInfo != null) {
-
-                Log.e("myLog", "Failed to findPlacemarkAtLocation: error=" + errInfo.toString());
-                Toast.makeText(Mainpage.this, errInfo.toString(), Toast.LENGTH_LONG).show();
-                return;
-            }else{
-                Toast.makeText(Mainpage.this, placeMark.toString(), Toast.LENGTH_LONG).show();
-            }
-        }
-    };
-
-    private final NMapLocationManager.OnLocationChangeListener onMyLocationChangeListener = new NMapLocationManager.OnLocationChangeListener() {
-        @Override
-        public boolean onLocationChanged(NMapLocationManager locationManager,
-                                         NGeoPoint myLocation) {
-			if (mMapController != null) {
-				mMapController.animateTo(myLocation);
-			}
-            Log.d("myLog", "myLocation  lat " + myLocation.getLatitude());
-            Log.d("myLog", "myLocation  lng " + myLocation.getLongitude());
-                        findPlacemarkAtLocation(myLocation.getLongitude(), myLocation.getLatitude());
-
-            //위도경도를 주소로 변환
-            return true;
-        }
-        @Override
-        public void onLocationUpdateTimeout(NMapLocationManager locationManager) {
-            // stop location updating
-
-//             Runnable runnable = new Runnable() {
-//
-//             public void run() {
-//
-//             stopMyLocation();
-//
-//             }
-//
-//             };
-//
-//             runnable.run();
-            Toast.makeText(Mainpage.this,
-                    "Your current location is temporarily unavailable.",
-                    Toast.LENGTH_LONG).show();
-        }
-        @Override
-        public void onLocationUnavailableArea(
-                NMapLocationManager locationManager, NGeoPoint myLocation) {
-            Toast.makeText(Mainpage.this,
-                    "Your current location is unavailable area.",
-                    Toast.LENGTH_LONG).show();
-            stopMyLocation();
-
-        }
-    };
-
-    private void stopMyLocation() {
-        if (mMyLocationOverlay != null) {
-            mMapLocationManager.disableMyLocation();
-            if (mMapView.isAutoRotateEnabled()) {
-                mMyLocationOverlay.setCompassHeadingVisible(false);
-                mMapCompassManager.disableCompass();
-                mMapView.setAutoRotateEnabled(false, false);
-                MapContainer.requestLayout();
-            }
-
-        }
-
-
-
-    }
-
 }
 // 구글맵 사용하는 코드
 
