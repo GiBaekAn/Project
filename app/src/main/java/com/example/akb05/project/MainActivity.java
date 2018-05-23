@@ -30,6 +30,7 @@ import java.util.Iterator;
 public class MainActivity extends AppCompatActivity {
 
     private final String TAG = getClass().getSimpleName();
+    public static boolean success=false;
     EditText etid,etpw;
     Button login,create;
 
@@ -67,8 +68,10 @@ public class MainActivity extends AppCompatActivity {
                 if(isValidEmail(email) && isValidPasswd(passwd)){
                     signinAccount(email, passwd);
                     // 로그인 클릭 동시에 메인메뉴로 이동
-                    Intent mainintent = new Intent(getApplicationContext(), Mainpage.class);
-                    startActivity(mainintent);
+                    if(success){
+                        Intent mainintent = new Intent(getApplicationContext(), Mainpage.class);
+                        startActivity(mainintent);
+                    }
                 } else {
                     Toast.makeText(MainActivity.this,
                             "Check Email or Password",
@@ -145,10 +148,14 @@ public class MainActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 Log.d(TAG, "Sing in Account:" + task.isSuccessful());
                                 if(task.isSuccessful()){
+                                    success = true;
                                     Log.d(TAG, "Account Log in  Complete");
                                     Log.d(TAG, "Current User:" + mAuth.getCurrentUser().getEmail());
+                                    Toast.makeText(MainActivity.this,
+                                            "Log In Complete", Toast.LENGTH_LONG).show();
                                     // Go go Main
                                 }else {
+                                    success = false;
                                     Toast.makeText(MainActivity.this,
                                             "Log In Failed", Toast.LENGTH_LONG).show();
                                 }
