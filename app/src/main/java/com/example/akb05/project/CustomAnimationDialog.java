@@ -30,7 +30,7 @@ public class CustomAnimationDialog extends Activity {
 
         initView();
         Animation a = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.loading);
-        a.setDuration(3000);
+        a.setDuration(5000);
         /*a.setInterpolator(new Interpolator() {
             private final int frameCount = 8;
 
@@ -57,7 +57,7 @@ public class CustomAnimationDialog extends Activity {
             public void run() {
                 finish();
             }
-        }, 3000);
+        }, 5000);
     }
 }
 

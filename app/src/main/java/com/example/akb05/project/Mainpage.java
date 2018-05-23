@@ -79,7 +79,7 @@ public class Mainpage extends NMapActivity implements NMapView.OnMapStateChangeL
         //mMapView.setBuiltInZoomControls(true,null);
         super.setMapDataProviderListener(onDataProviderListener);
 
-        mMapView.setOnMapStateChangeListener(this);
+        //mMapView.setOnMapStateChangeListener(this);
 
     }
 
