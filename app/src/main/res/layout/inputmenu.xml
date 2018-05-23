@@ -15,6 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <TextView
                 android:id="@+id/textView1"
                 android:layout_width="wrap_content"
@@ -26,14 +27,14 @@
                 android:layout_width="229dp"
                 android:layout_height="132dp"
                 android:onClick="onClick"
-                app:srcCompat="@drawable/common_google_signin_btn_icon_dark"
-              />
+                app:srcCompat="@drawable/common_google_signin_btn_icon_dark" />
 
             <TextView
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="제품 이름" />
+
             <EditText
                 android:id="@+id/name"
                 android:layout_width="wrap_content"
@@ -47,6 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="제품 가격" />
+
             <EditText
                 android:id="@+id/saledprice"
                 android:layout_width="wrap_content"
@@ -60,13 +62,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="제품 원가" />
+
             <EditText
-            android:id="@+id/price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="numberDecimal"
-            android:text="2,000원" />
+                android:id="@+id/price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="numberDecimal"
+                android:text="2,000원" />
 
             <TextView
                 android:id="@+id/textView5"
@@ -89,7 +92,6 @@
                 android:timePickerMode="spinner" />
 
 
-
             <TextView
                 android:id="@+id/textView6"
                 android:layout_width="wrap_content"
@@ -107,24 +109,24 @@
                 android:text="편의점 이름" />
 
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
                 <Spinner
                     android:id="@+id/spinner"
                     android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    />
+                    android:layout_height="wrap_content" />
 
                 <EditText
                     android:id="@+id/storename"
                     android:layout_width="190dp"
                     android:layout_height="wrap_content" />
+
                 <TextView
-                    android:text="지점"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:text="지점" />
 
             </LinearLayout>
 
