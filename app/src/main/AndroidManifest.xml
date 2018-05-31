@@ -3,6 +3,8 @@
     package="com.example.akb05.project">
     <uses-feature android:required="true" android:glEsVersion="0x00020000"/>
     <permission android:name="com.example.akb05.project.permission.MAPS_RECEIVE" android:label="signature"/>
+    <permission android:name="com.example.akb05.project.permission.ACCESS_FINE_LOCATION" android:label="signature"/>
+    <permission android:name="com.example.akb05.project.permission.ACCESS_COARSE_LOCATION" android:label="signature"/>
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -33,8 +35,11 @@
     <activity android:name=".Mainpage"/>
         <activity android:name=".MenuDetails"/>
         <activity android:name=".InputMenu"/>
+
         <activity android:name=".CreateAccount"/>
         <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyCa5tYSZjCq25NhyyY2Y7hC6q7J_VZ6V5k"/>
+        <uses-library android:name="com.google.android.maps" />
+
     </application>
 
 </manifest>

@@ -129,6 +129,9 @@ public class CreateAccount extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 Log.d(TAG, "Create Account:" + task.isSuccessful());
                                 if(task.isSuccessful()){
+                                    Toast.makeText(CreateAccount.this,
+                                            "ID 생성이 완료되었습니다.",
+                                            Toast.LENGTH_LONG).show();
                                     Log.d(TAG, "Account Create Complete");
                                     Log.d(TAG, "Current User:" + mAuth.getCurrentUser().getEmail());
 

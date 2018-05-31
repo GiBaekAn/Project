@@ -20,6 +20,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -30,16 +31,16 @@ import java.util.Iterator;
 public class MainActivity extends AppCompatActivity {
 
     private final String TAG = getClass().getSimpleName();
-    public static boolean success=false;
     EditText etid,etpw;
     Button login,create;
 
     private FirebaseAuth mAuth;
-
+    private FirebaseAuth.AuthStateListener mAuthListener;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getSupportActionBar().hide();
         Intent intent = new Intent(MainActivity.this, CustomAnimationDialog.class);
         startActivity(intent);
 
@@ -52,26 +53,56 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        mAuth = FirebaseAuth.getInstance();
+        mAuthListener = new FirebaseAuth.AuthStateListener(){
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth){
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+            }
+        };
+
         if(mAuth.getCurrentUser() != null){
             Log.d(TAG, "Current User:" + mAuth.getCurrentUser().getEmail());
         } else {
             Log.d(TAG, "Log out State");
         }
+
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String email = etid.getText().toString().trim();
-                String passwd = etpw.getText().toString().trim();
+                Toast.makeText(MainActivity.this,
+                        "로그인 중입니다...",
+                        Toast.LENGTH_SHORT).show();
+                final String email = etid.getText().toString().trim();
+                final String passwd = etpw.getText().toString().trim();
                 Log.d(TAG, "Email:" + email + " Password:" + passwd);
                 //이메일과 비밀번호를 확인하는 부분
                 if(isValidEmail(email) && isValidPasswd(passwd)){
-                    signinAccount(email, passwd);
+                    mAuth.signInWithEmailAndPassword(email,passwd)
+                            .addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if(task.isSuccessful()){
+                                        Intent intent = new Intent(MainActivity.this,Mainpage.class);
+                                        startActivity(intent);
+                                        Toast.makeText(MainActivity.this,
+                                                "로그인 성공",
+                                                Toast.LENGTH_LONG).show();
+                                    }
+                                    else{
+                                        Toast.makeText(MainActivity.this,
+                                                "로그인 실패",
+                                                Toast.LENGTH_LONG).show();
+
+                                    }
+                                }
+                            });
                     // 로그인 클릭 동시에 메인메뉴로 이동
-                    if(success){
-                        Intent mainintent = new Intent(getApplicationContext(), Mainpage.class);
-                        startActivity(mainintent);
-                    }
+
+//                    if(success){
+//                        Intent mainintent = new Intent(getApplicationContext(), Mainpage.class);
+//                        startActivity(mainintent);
+//                    }
+
                 } else {
                     Toast.makeText(MainActivity.this,
                             "Check Email or Password",
@@ -97,6 +128,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+//    public void onStart(){
+//        super.onStart();
+//        mAuth.addAuthStateListener(mAuthListener);
+//    }
+//
+//    public void onStop(){
+//        super.onStop();
+//        if(mAuthListener!=null){
+//        mAuth.removeAuthStateListener(mAuthListener);
+//        }
+//    }
 
 
 
@@ -137,32 +180,32 @@ public class MainActivity extends AppCompatActivity {
 //                            }
 //                        });
 //
+////    }
+//    private void signinAccount(String email, String passwd){
+//
+//        //로그내용
+//        mAuth.signInWithEmailAndPassword(email, passwd)
+//                .addOnCompleteListener(this,
+//                        new OnCompleteListener<AuthResult>() {
+//                            @Override
+//                            public void onComplete(@NonNull Task<AuthResult> task) {
+//                                //Log.d(TAG, "Sign in Account:" + task.isSuccessful());
+//                                if(task.isSuccessful()){
+//                                    // Log.d(TAG, "Account Log in  Complete");
+//                                    //Log.d(TAG, "Current User:" + mAuth.getCurrentUser().getEmail());
+//                                    Toast.makeText(MainActivity.this,
+//                                            "Log In Complete", Toast.LENGTH_LONG).show();
+//                                    // Go go Main
+//                                }else {
+//                                    Toast.makeText(MainActivity.this,
+//                                            "Log In Failed", Toast.LENGTH_LONG).show();
+//                                }
+//                            }
+//                        });
+//
 //    }
-    private void signinAccount(String email, String passwd){
 
-        //로그내용
-        mAuth.signInWithEmailAndPassword(email, passwd)
-                .addOnCompleteListener(this,
-                        new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                Log.d(TAG, "Sing in Account:" + task.isSuccessful());
-                                if(task.isSuccessful()){
-                                    success = true;
-                                    Log.d(TAG, "Account Log in  Complete");
-                                    Log.d(TAG, "Current User:" + mAuth.getCurrentUser().getEmail());
-                                    Toast.makeText(MainActivity.this,
-                                            "Log In Complete", Toast.LENGTH_LONG).show();
-                                    // Go go Main
-                                }else {
-                                    success = false;
-                                    Toast.makeText(MainActivity.this,
-                                            "Log In Failed", Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        });
 
-    }
 
 
 

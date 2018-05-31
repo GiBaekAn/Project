@@ -1,15 +1,24 @@
 package com.example.akb05.project;
 
+import android.*;
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -22,6 +31,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -50,22 +60,37 @@ import java.util.Date;
  */
 
 public class InputMenu extends Activity implements View.OnClickListener {
+    private LocationManager locationManager;
+    private LocationListener locationListener;
+
+
     private String mCurrentPhotoPath;
     private static final int FROM_CAMERA = 0;
     private static final int FROM_ALBUM = 1;
-    private Uri imgUri,photoURI;
+    private Uri imgUri=null,photoURI=null;
     private FirebaseAuth mAuth;
+    private final int PERMISSIONS_ACCESS_FINE_LOCATION = 1000;
+    private final int PERMISSIONS_ACCESS_COARSE_LOCATION = 1001;
+    private boolean isAccessFineLocation = false;
+    private boolean isAccessCoarseLocation = false;
+    private boolean isPermission = true;
+
+    private GpsInfo gps;
+
 
     ImageButton inputimg;
     CalendarView cView;
     TimePicker tPicker;
     Spinner spinner;
+    TextView t1,t2;
     EditText et_foodname, et_saledprice, et_price, et_storename;
-    Button btn;
+    Button btn,btn2;
     int year;
     int month;
     int day;
-    int flag=0;
+    double lat;
+    double lng;
+    boolean photo = false;
     public static String select ="";
 
     private String absoultePath;
@@ -77,14 +102,23 @@ public class InputMenu extends Activity implements View.OnClickListener {
 
 
     public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.inputmenu);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.inputmenu);
+//
+//        settingGPS();
+//        Location userLocation = getMyLocation();
+//
+//        if(userLocation!=null){
+//            lat = userLocation.getLatitude();
+//            lng = userLocation.getLongitude();
+//        }
 
         PermissionListener permissionlistener = new PermissionListener() {
             @Override
             public void onPermissionGranted() {
                 Toast.makeText(InputMenu.this, "Permission Granted", Toast.LENGTH_SHORT).show();
             }
+
             @Override
             public void onPermissionDenied(ArrayList<String> deniedPermissions) {
                 Toast.makeText(InputMenu.this, "Permission Denied\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show();
@@ -93,33 +127,75 @@ public class InputMenu extends Activity implements View.OnClickListener {
         new TedPermission(this)
                 .setPermissionListener(permissionlistener)
                 .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission] ")
-                .setPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.CAMERA)
+                .setPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.CAMERA, Manifest.permission.INTERNET, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
                 .check();
 
 
+        t1 = findViewById(R.id.textView12);
+        t2 = findViewById(R.id.textView14);
         inputimg = findViewById(R.id.inputimg);
-    cView = findViewById(R.id.cv);
-    tPicker = findViewById(R.id.tp);
-    spinner = findViewById(R.id.spinner);
-    et_foodname = findViewById(R.id.name);
-    et_saledprice = findViewById(R.id.saledprice);
-    et_price = findViewById(R.id.price);
-    et_storename = findViewById(R.id.storename);
-    btn = findViewById(R.id.button);
+        btn2 = findViewById(R.id.button2);
+        cView = findViewById(R.id.cv);
+        tPicker = findViewById(R.id.tp);
+        spinner = findViewById(R.id.spinner);
+        et_foodname = findViewById(R.id.name);
+        et_saledprice = findViewById(R.id.saledprice);
+        et_price = findViewById(R.id.price);
+        et_storename = findViewById(R.id.storename);
+        btn = findViewById(R.id.button);
 
-    final String[] nameofstore = {"GS25","미니스톱","CU","세븐일레븐","With me","기타"};
-    final ArrayAdapter<String> adapter;
-    adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,nameofstore);
-    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-    spinner.setAdapter(adapter);
-    //편의점 종류를 선택하는 spinner
+        final String[] nameofstore = {"GS25", "미니스톱", "CU", "세븐일레븐", "With me", "기타"};
+        final ArrayAdapter<String> adapter;
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, nameofstore);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        //편의점 종류를 선택하는 spinner
 
-    Calendar c = Calendar.getInstance();
-    c.setTimeInMillis(cView.getDate());
-    year = c.get(Calendar.YEAR);
-    month = c.get(Calendar.MONTH) +1;
-    day = c.get(Calendar.DAY_OF_MONTH);
-    // 현재시간을 각 변수에 저장
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(cView.getDate());
+        year = c.get(Calendar.YEAR);
+        month = c.get(Calendar.MONTH) + 1;
+        day = c.get(Calendar.DAY_OF_MONTH);
+        // 현재시간을 각 변수에 저장
+
+
+        btn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!isPermission) {
+                    return;
+                }
+                gps = new GpsInfo(InputMenu.this);
+                // GPS 사용유무 가져오기
+                if (gps.isGetLocation()) {
+                    double latitude = gps.getLatitude();
+                    double longitude = gps.getLongitude();
+                    lat = latitude;
+                    lng = longitude;
+                    String a1 = Double.toString(lat);
+                    String a2 = Double.toString(lng);
+                    t1.setText(a1);
+                    t2.setText(a2);
+
+                    Toast.makeText(
+                            getApplicationContext(),
+                            "당신의 위치 - \n위도: " + latitude + "\n경도: " + longitude,
+                            Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(
+                            getApplicationContext(),
+                            "가져오기 실패 \n ",
+                            Toast.LENGTH_LONG).show();
+                    // GPS 를 사용할수 없으므로
+                    gps.showSettingsAlert();
+
+                }
+
+            }
+        });
+
+
+
 
     cView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
         @Override
@@ -138,22 +214,28 @@ public class InputMenu extends Activity implements View.OnClickListener {
 
             //Uri file = Uri.fromFile(new File("path/to/images/rivers.jpg"));
             UploadTask uploadTask;
-            StorageReference riversRef = storageRef.child("photo/"+photoURI.getLastPathSegment());
-            uploadTask = riversRef.putFile(photoURI);
+            if(photoURI!=null){
 
-            // Register observers to listen for when the download is done or if it fails
-            uploadTask.addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle unsuccessful uploads
-                }
-            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                }
-            });
+                StorageReference riversRef = storageRef.child("photo/"+photoURI.getLastPathSegment());
+                photo = true;
+                uploadTask = riversRef.putFile(photoURI);
+                // Register observers to listen for when the download is done or if it fails
+                uploadTask.addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Handle unsuccessful uploads
+                    }
+                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                        Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    }
+                });
+            }
+            else{
+                photo = false;
+            }
 
 
             String foodname = et_foodname.getText().toString().trim();
@@ -167,19 +249,23 @@ public class InputMenu extends Activity implements View.OnClickListener {
             int minute = tPicker.getMinute();
 
 
-            foodDTO food = new foodDTO(foodname,saledprice,price,year,month,day,hour,minute,37.279940,127.043867,select,storename);
-            databaseReference.child("food").push().setValue(food);
-            Toast.makeText(InputMenu.this,
-                    "등록되었습니다.",
-                    Toast.LENGTH_LONG).show();
-            finish();
+            if(foodname.equals("")||saledprice.equals("")||price.equals("")||year==0||month==0||day==0||hour==0||minute==0||lat==0.0||lng==0.0||storename.equals("")||photo){
+                Toast.makeText(InputMenu.this,
+                        "빈 항목이 있는지 확인해주세요.",
+                        Toast.LENGTH_LONG).show();
+            }
+            else{
+                foodDTO food = new foodDTO(foodname,saledprice,price,year,month,day,hour,minute,lat,lng,select,storename);
+                databaseReference.child("food").push().setValue(food);
+                Toast.makeText(InputMenu.this,
+                        "등록되었습니다.",
+                        Toast.LENGTH_LONG).show();
+                finish();
+            }
         }
     });
     // 등록 버튼을 눌렀을 경우 등록
-
     }
-
-
 
 
     public void onClick(View v){
@@ -209,7 +295,6 @@ public class InputMenu extends Activity implements View.OnClickListener {
                 .show();
     }
     public void takePhoto(){
-
         // 촬영 후 이미지 가져옴
         String state = Environment.getExternalStorageState();
         if(Environment.MEDIA_MOUNTED.equals(state)){
