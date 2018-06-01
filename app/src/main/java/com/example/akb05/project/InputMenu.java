@@ -237,7 +237,6 @@ public class InputMenu extends Activity implements View.OnClickListener {
                 photo = false;
             }
 
-
             String foodname = et_foodname.getText().toString().trim();
             String saledprice = et_saledprice.getText().toString().trim();
             String price = et_price.getText().toString().trim();
@@ -249,7 +248,7 @@ public class InputMenu extends Activity implements View.OnClickListener {
             int minute = tPicker.getMinute();
 
 
-            if(foodname.equals("")||saledprice.equals("")||price.equals("")||year==0||month==0||day==0||hour==0||minute==0||lat==0.0||lng==0.0||storename.equals("")||photo){
+            if(foodname.equals("")||saledprice.equals("")||price.equals("")||year==0||month==0||day==0||hour==0||minute==0||lat==0.0||lng==0.0||storename.equals("")||!photo){
                 Toast.makeText(InputMenu.this,
                         "빈 항목이 있는지 확인해주세요.",
                         Toast.LENGTH_LONG).show();
