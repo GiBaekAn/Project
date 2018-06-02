@@ -35,7 +35,6 @@
                 android:maxHeight="150dp"
                 android:maxWidth="150dp"
                 android:scaleType="fitXY"
-                app:srcCompat="@drawable/foodimage1"
                 tools:layout_editor_absoluteX="46dp"
                 tools:layout_editor_absoluteY="93dp" />
 
