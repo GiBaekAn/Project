@@ -1,6 +1,7 @@
 package com.example.akb05.project;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.SoundEffectConstants;
@@ -10,6 +11,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.module.AppGlideModule;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -31,6 +33,8 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback{
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageReference = storage.getReferenceFromUrl("gs://project-245fb.appspot.com").child("photo").child("13062.jpg");
 
+    Uri a = Uri.parse(storageReference.toString());
+
     ImageButton menuimg;
     Button inputmenubtn;
     // 오버레이 관리자
@@ -47,7 +51,8 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback{
         menuimg = findViewById(R.id.menuimg);
         inputmenubtn = findViewById(R.id.inputmenubtn);
 
-        Glide.with(this).load(R.drawable.foodimage1).into(menuimg);
+        //Glide.with(this).load(a).into(menuimg);
+        //Glide.with(getBaseContext()).load(a).into(menuimg);
 
         menuimg.setOnClickListener(new View.OnClickListener() {
             @Override

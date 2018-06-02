@@ -28,7 +28,7 @@
                 android:layout_width="229dp"
                 android:layout_height="132dp"
                 android:onClick="onClick"
-                app:srcCompat="@drawable/common_google_signin_btn_icon_dark" />
+                app:srcCompat="@drawable/inputimg" />
 
             <TextView
                 android:id="@+id/textView2"

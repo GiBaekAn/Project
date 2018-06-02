@@ -127,7 +127,7 @@ public class InputMenu extends Activity implements View.OnClickListener {
         new TedPermission(this)
                 .setPermissionListener(permissionlistener)
                 .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission] ")
-                .setPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.CAMERA, Manifest.permission.INTERNET, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+                .setPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE,android.Manifest.permission.CAMERA, Manifest.permission.INTERNET, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
                 .check();
 
 
@@ -267,6 +267,41 @@ public class InputMenu extends Activity implements View.OnClickListener {
     }
 
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode != RESULT_OK){
+            return;
+        }
+        switch (requestCode){
+            case FROM_ALBUM : {
+                //앨범에서 가져오기
+                if(data.getData()!=null){
+                    try{
+                        Log.v("알림", "FROM_ALBUM 처리");
+                        photoURI = data.getData();
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), photoURI);
+                        inputimg.setImageBitmap(bitmap);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+                break;
+            }
+            case FROM_CAMERA : {
+                //카메라 촬영
+                try{
+                    Log.v("알림", "FROM_CAMERA 처리");
+                    galleryAddPic();
+                    inputimg.setImageURI(imgUri);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                break;
+            }
+        }
+    }
+
     public void onClick(View v){
         DialogInterface.OnClickListener cameraListener = new DialogInterface.OnClickListener() {
             @Override
@@ -293,30 +328,40 @@ public class InputMenu extends Activity implements View.OnClickListener {
                 .setNegativeButton("취소",cancelListener)
                 .show();
     }
-    public void takePhoto(){
-        // 촬영 후 이미지 가져옴
-        String state = Environment.getExternalStorageState();
-        if(Environment.MEDIA_MOUNTED.equals(state)){
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            if(intent.resolveActivity(getPackageManager())!=null){
-                File photoFile = null;
-                try{
-                    photoFile = createImageFile();
-                }catch (IOException e){
-                    e.printStackTrace();
-                }
-                if(photoFile!=null){
-                    Uri providerURI = FileProvider.getUriForFile(this,getPackageName(),photoFile);
-                    imgUri = providerURI;
-                    intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, providerURI);
-                    startActivityForResult(intent, FROM_CAMERA);
-                }
-            }
-        }else{
-            Log.v("알림", "저장공간에 접근 불가능");
-            return;
-        }
+
+    public void takePhoto() {
+        Intent intent = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
+        String url = "tmp_" + String.valueOf(System.currentTimeMillis()) + "jpg";
+        photoURI = Uri.fromFile(new File(Environment.getExternalStorageDirectory(), url));
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+        startActivityForResult(intent, FROM_CAMERA);
     }
+
+//    }
+//    public void takePhoto(){
+//        // 촬영 후 이미지 가져옴
+//        String state = Environment.getExternalStorageState();
+//        if(Environment.MEDIA_MOUNTED.equals(state)){
+//            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//            if(intent.resolveActivity(getPackageManager())!=null){
+//                File photoFile = null;
+//                try{
+//                    photoFile = createImageFile();
+//                }catch (IOException e){
+//                    e.printStackTrace();
+//                }
+//                if(photoFile!=null){
+//                    Uri providerURI = FileProvider.getUriForFile(this,getPackageName(),photoFile);
+//                    imgUri = providerURI;
+//                    intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, providerURI);
+//                    startActivityForResult(intent, FROM_CAMERA);
+//                }
+//            }
+//        }else{
+//            Log.v("알림", "저장공간에 접근 불가능");
+//            return;
+//        }
+//    }
 
     public File createImageFile() throws IOException{
         String imgFileName = System.currentTimeMillis() + ".jpg";
@@ -349,39 +394,6 @@ public class InputMenu extends Activity implements View.OnClickListener {
         startActivityForResult(intent, FROM_ALBUM);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode != RESULT_OK){
-            return;
-        }
-        switch (requestCode){
-            case FROM_ALBUM : {
-                //앨범에서 가져오기
-                if(data.getData()!=null){
-                    try{
-                        photoURI = data.getData();
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), photoURI);
-                        inputimg.setImageBitmap(bitmap);
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                }
-                break;
-            }
-            case FROM_CAMERA : {
-                //카메라 촬영
-                try{
-                    Log.v("알림", "FROM_CAMERA 처리");
-                    galleryAddPic();
-                    inputimg.setImageURI(imgUri);
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-                break;
-            }
-        }
-    }
 
 
 
