@@ -215,10 +215,10 @@ public class InputMenu extends Activity implements View.OnClickListener {
             //Uri file = Uri.fromFile(new File("path/to/images/rivers.jpg"));
             UploadTask uploadTask;
             if(photoURI!=null){
-
                 StorageReference riversRef = storageRef.child("photo/"+photoURI.getLastPathSegment());
                 photo = true;
                 uploadTask = riversRef.putFile(photoURI);
+               // temp_uri = uploadTask.getSnapshot().getDownloadUrl();
                 // Register observers to listen for when the download is done or if it fails
                 uploadTask.addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -229,6 +229,7 @@ public class InputMenu extends Activity implements View.OnClickListener {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                        //temp_uri = taskSnapshot.getDownloadUrl();
                         Uri downloadUrl = taskSnapshot.getDownloadUrl();
                     }
                 });
@@ -242,10 +243,18 @@ public class InputMenu extends Activity implements View.OnClickListener {
             String price = et_price.getText().toString().trim();
             select = spinner.getSelectedItem().toString();
             String storename = et_storename.getText().toString().trim();
-
-
+            String title = photoURI.getLastPathSegment();
             int hour = tPicker.getHour();
             int minute = tPicker.getMinute();
+            String month_s = month+"";
+            String day_s = day+"";
+            String hour_s = hour+"";
+            String minute_s = minute+"";
+            if(month<10){month_s = "0"+month;}
+            if(day<10){day_s = "0"+day;}
+            if(hour<10){hour_s = "0"+hour;}
+            if(minute<10){minute_s = "0"+minute;}
+            String date = year+month_s+day_s+hour_s+minute_s;
 
 
             if(foodname.equals("")||saledprice.equals("")||price.equals("")||year==0||month==0||day==0||hour==0||minute==0||lat==0.0||lng==0.0||storename.equals("")||!photo){
@@ -254,7 +263,7 @@ public class InputMenu extends Activity implements View.OnClickListener {
                         Toast.LENGTH_LONG).show();
             }
             else{
-                foodDTO food = new foodDTO(foodname,saledprice,price,year,month,day,hour,minute,lat,lng,select,storename);
+                foodDTO food = new foodDTO(title,foodname,saledprice,price,date,lat,lng,select,storename);
                 databaseReference.child("food").push().setValue(food);
                 Toast.makeText(InputMenu.this,
                         "등록되었습니다.",

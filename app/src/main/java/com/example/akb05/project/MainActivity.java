@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -40,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Fresco.initialize(this);
         getSupportActionBar().hide();
         Intent intent = new Intent(MainActivity.this, CustomAnimationDialog.class);
         startActivity(intent);
@@ -72,8 +75,12 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this,
                         "로그인 중입니다...",
                         Toast.LENGTH_SHORT).show();
-                final String email = etid.getText().toString().trim();
-                final String passwd = etpw.getText().toString().trim();
+                //final String email = etid.getText().toString().trim();
+                //final String passwd = etpw.getText().toString().trim();
+                final String email = "aaattt@naver.com";
+                final String passwd = "aaattt";
+
+                ////////////////////////////////////////////////////////////////////////////////////////////////////////////쉬운 로그인을 위해 잠시 바꿔둔 상태
                 Log.d(TAG, "Email:" + email + " Password:" + passwd);
                 //이메일과 비밀번호를 확인하는 부분
                 if(isValidEmail(email) && isValidPasswd(passwd)){
