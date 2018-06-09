@@ -35,8 +35,13 @@ public class MainActivity extends AppCompatActivity {
     EditText etid,etpw;
     Button login,create;
 
+    private GpsInfo gps;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+
+    double lat;
+    double lng;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,7 +84,14 @@ public class MainActivity extends AppCompatActivity {
                 //final String passwd = etpw.getText().toString().trim();
                 final String email = "aaattt@naver.com";
                 final String passwd = "aaattt";
-
+                gps = new GpsInfo(MainActivity.this);
+                // GPS 사용유무 가져오기
+                if (gps.isGetLocation()) {
+                    final double latitude = gps.getLatitude();
+                    final double longitude = gps.getLongitude();
+                    lat = latitude;
+                    lng = longitude;
+                }
                 ////////////////////////////////////////////////////////////////////////////////////////////////////////////쉬운 로그인을 위해 잠시 바꿔둔 상태
                 Log.d(TAG, "Email:" + email + " Password:" + passwd);
                 //이메일과 비밀번호를 확인하는 부분
@@ -212,7 +224,14 @@ public class MainActivity extends AppCompatActivity {
 //
 //    }
 
-
+    public double getLat(){
+        Log.d("로그인시 lat값:", String.valueOf(lat));
+        return lat;
+    }
+    public double getLng(){
+        Log.d("로그인시 lng값:", String.valueOf(lng));
+        return lng;
+    }
 
 
 

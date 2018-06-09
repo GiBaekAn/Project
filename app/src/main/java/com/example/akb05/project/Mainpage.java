@@ -32,6 +32,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -43,6 +44,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.maps.android.clustering.ClusterManager;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import com.squareup.picasso.Callback;
@@ -56,7 +58,7 @@ import java.util.Calendar;
  * Created by dong on 2018-05-21.
  */
 
-public class Mainpage extends FragmentActivity implements OnMapReadyCallback{
+public class Mainpage extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
 
     LinearLayout MapContainer;
     LinearLayout Hotdeal;
@@ -77,7 +79,9 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback{
 
     GoogleMap mMap;
 
-
+    MainActivity mlocation = new MainActivity();
+    double lat = mlocation.getLat();
+    double lng = mlocation.getLng();
     ///////////////////////////////////////////////////////////  HOT DEAL 시계 구현
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -266,18 +270,29 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback{
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        LatLng ajou = new LatLng(37.279940, 127.043867);
-
         MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(ajou).title("여기는 아주대학교");
-
+        LatLng mylocation = new LatLng(lat,lng);
         mMap.addMarker(markerOptions);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(ajou));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ajou,16));
+        mMap.addMarker(new MarkerOptions().position(mylocation).title("등록한편의점"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mylocation, 14.0f));
+        ClusterManager<Storage> mClusterManager = new ClusterManager<Storage>(this,mMap);
+        mMap.setOnCameraChangeListener(mClusterManager);
+        mMap.setOnInfoWindowClickListener(this);
+        Log.d("lat값은??", String.valueOf(lat));
+        Log.d("lat값은??", String.valueOf(lng));
 
     }
+    public double getLat(){
+        return lat;
+    }
+    public double getLng(){
+        return lng;
+    }
 
-
-
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        Intent intent = new Intent(getApplicationContext(), StoreDetails.class);
+        startActivity(intent);
+    }
 }
 /////////////////////////////////////////////////////// 구글맵 사용하는 코드
