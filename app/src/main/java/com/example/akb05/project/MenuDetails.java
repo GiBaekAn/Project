@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -58,18 +59,13 @@ public class MenuDetails extends AppCompatActivity {
         String name = intent.getStringExtra("name");
         String storename = intent.getStringExtra("storename");
         String storekind = intent.getStringExtra("storekind");
-        //Double lat = intent.getDoubleExtra("lat",0.0);
-        //Double lng = intent.getDoubleExtra("lng",0.0);
+        lat = intent.getDoubleExtra("lat",0.0);
+        lng = intent.getDoubleExtra("lng",0.0);
         String price = intent.getStringExtra("price");
         String priced = intent.getStringExtra("priced");
         String date = intent.getStringExtra("date");
         apply(data);
 
-        Log.v("알림", "string ::  " + name);
-        Log.v("알림", "string ::  " + storekind);
-        Log.v("알림", "string ::  " + storename);
-        Log.v("알림", "string ::  " + price);
-        Log.v("알림", "string ::  " + priced);
 
 
         nametv.setText(name);
@@ -86,6 +82,19 @@ public class MenuDetails extends AppCompatActivity {
         pricedtv.setText(priced);
         datetv.setText(date.substring(0,4)+"년 "+date.substring(4,6)+"월 "+date.substring(6,8)+"일 "+date.substring(8,10)+"시 "+date.substring(10,12)+"분");
 
+        final double a = lat;
+        final double b = lng;
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent map = new Intent(getApplicationContext(), Minimap.class);
+                map.putExtra("lat",a);
+                map.putExtra("lng",b);
+                Log.v("알림", "전달됩니다 ::  " + a);
+                Log.v("알림", "인텐트가 ::  " + b);
+                startActivity(map);
+            }
+        });
 
     }
 
@@ -106,4 +115,7 @@ public class MenuDetails extends AppCompatActivity {
             }
         });
     }
+
+
+
 }
