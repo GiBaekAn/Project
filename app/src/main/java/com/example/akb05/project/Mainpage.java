@@ -333,19 +333,21 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback,Goo
         LatLng mylocation = new LatLng(mlat,mlng);
         markerOptions.position(mylocation);
         mMap.addMarker(markerOptions.title("현재위치"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mylocation,16));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mylocation,15));
         mMap.setOnInfoWindowClickListener(this);
 
+        ClusterManager<Storage> mClusterManager = new ClusterManager<Storage>(this,mMap);
+        mMap.setOnCameraChangeListener(mClusterManager);
 
         for(int i = 0; i< 10; i++){
-            LatLng addlocation = new LatLng(lat[i],lng[i]);
-            mMap.addMarker(new MarkerOptions().position(addlocation).title(storekind[i]+storename[i]));
+            mClusterManager.addItem(new Storage(new LatLng(lat[i],lng[i]),storekind[i]+storename[i]));
+
+//            Log.v("알림",i+"번째 lat값은??"+ String.valueOf(lat[i]));
+//            Log.v("알림",i+"번째 lat값은??"+ String.valueOf(lng[i]));
         }
 
 
 
-        Log.v("알림","lat값은??"+ String.valueOf(mlat));
-        Log.v("알림","lat값은??"+ String.valueOf(mlng));
 
     }
     public double getLat(){
