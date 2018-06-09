@@ -329,12 +329,19 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback,Goo
 
         MarkerOptions markerOptions = new MarkerOptions();
         LatLng mylocation = new LatLng(mlat,mlng);
-        //mMap.addMarker(markerOptions);
-        //mMap.addMarker(new MarkerOptions().position(mylocation).title("등록한편의점"));
-        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mylocation, 14.0f));
-        //ClusterManager<Storage> mClusterManager = new ClusterManager<Storage>(this,mMap);
-        //mMap.setOnCameraChangeListener(mClusterManager);
-        //mMap.setOnInfoWindowClickListener(this);///////////////////////////////////////////////////////////////////////////////////////////////안되는부분
+        markerOptions.position(mylocation);
+
+        for(int i = 0; i< 10; i++){
+            LatLng addlocation = new LatLng(lat[i],lng[i]);
+            mMap.addMarker(new MarkerOptions().position(addlocation).title("추가된다!"));
+
+        }
+
+
+
+        mMap.addMarker(markerOptions.title("현재위치"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mylocation,16));
+        mMap.setOnInfoWindowClickListener(this);
         Log.v("알림","lat값은??"+ String.valueOf(mlat));
         Log.v("알림","lat값은??"+ String.valueOf(mlng));
 
@@ -348,7 +355,11 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback,Goo
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        Intent intent = new Intent(getApplicationContext(), MenuDetails.class);/////////////////////////////////////////////////////////////////바꿔야함!
+        Intent intent = new Intent(getApplicationContext(), StorageDetails.class);
+        double maplat = mlat;
+        double maplng = mlng;
+        intent.putExtra("lat",maplat);
+        intent.putExtra("lng",maplng);
         startActivity(intent);
     }
 
