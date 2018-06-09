@@ -22,13 +22,16 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -38,17 +41,24 @@ public class MainActivity extends AppCompatActivity {
     EditText etid,etpw;
     Button login,create;
     double mlat,mlng;
+    String now_date;
+    double[] lat = new double[10];
+    double[] lng = new double[10];
+    String[] storename = new String[10];
+    String[] storekind = new String[10];
 
     private GpsInfo gps;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Fresco.initialize(this);
+
+        databaseReference = FirebaseDatabase.getInstance().getReference();
         getSupportActionBar().hide();
 
         Intent intent = new Intent(MainActivity.this, CustomAnimationDialog.class);
@@ -72,6 +82,59 @@ public class MainActivity extends AppCompatActivity {
                 .setPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE,android.Manifest.permission.CAMERA, android.Manifest.permission.INTERNET, android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION)
                 .check();
 
+        Calendar calendar = Calendar.getInstance(); // 칼렌다 변수
+        int year = calendar.get(Calendar.YEAR); // 년
+        int month = calendar.get(Calendar.MONTH) + 1; // 월
+        int day = calendar.get(Calendar.DAY_OF_MONTH); // 일
+        int hour = calendar.get(Calendar.HOUR_OF_DAY); // 시
+        int minute = calendar.get(Calendar.MINUTE); // 분
+        int second = calendar.get(Calendar.SECOND); // 초
+        String month_s = month+"";
+        String day_s = day+"";
+        String hour_s = hour+"";
+        String minute_s = minute+"";
+        if(month<10){month_s = "0"+month;}
+        if(day<10){day_s = "0"+day;}
+        if(hour<10){hour_s = "0"+hour;}
+        if(minute<10){minute_s = "0"+minute;}
+        now_date = year+month_s+day_s+hour_s+minute_s;
+
+        databaseReference.child("food").orderByChild("date").addChildEventListener(new ChildEventListener() {
+
+            int k =0;
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                long a = Long.parseLong(dataSnapshot.child("date").getValue().toString());
+                long b = Long.parseLong(now_date);
+                if((a>b)&&k<10){
+                    lat[k] = Double.parseDouble(dataSnapshot.child("lat").getValue().toString());
+                    lng[k] = Double.parseDouble(dataSnapshot.child("lng").getValue().toString());
+                    storekind[k] = dataSnapshot.child("storekind").getValue().toString();
+                    storename[k] = dataSnapshot.child("storeName").getValue().toString();
+                    k++;
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         etid = findViewById(R.id.etid);
         etpw = findViewById(R.id.etpw);
@@ -129,6 +192,13 @@ public class MainActivity extends AppCompatActivity {
                                         Intent intent = new Intent(getApplicationContext(),Mainpage.class);
                                         intent.putExtra("mlat",mlat);
                                         intent.putExtra("mlng",mlng);
+                                        for(int i=0;i<10;i++){
+                                            intent.putExtra("lat["+i+"]",lat[i]);
+                                            intent.putExtra("lng["+i+"]",lng[i]);
+                                            intent.putExtra("storename["+i+"]",storename[i]);
+                                            intent.putExtra("storekind["+i+"]",storekind[i]);
+                                        }
+
                                         startActivity(intent);
                                         Toast.makeText(MainActivity.this,
                                                 "로그인 성공",

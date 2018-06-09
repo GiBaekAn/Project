@@ -79,10 +79,6 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback,Goo
     String[] storekind = new String[10];
     String[] date = new String[10];
 
-    double[] all_lat = new double[10000];
-    double[] all_lng = new double[10000];
-    String[] all_storename = new String[10000];
-
     Double mlat,mlng;
     String temp,now_date;
     TextView time1,time2,time3,time4;
@@ -100,18 +96,25 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback,Goo
 
         mlat = intent.getDoubleExtra("mlat",0.0);
         mlng = intent.getDoubleExtra("mlng",0.0);
+
+        for(int i=0;i<10;i++){
+            lat[i] = intent.getDoubleExtra("lat["+i+"]",0.0);
+            lng[i] = intent.getDoubleExtra("lng["+i+"]",0.0);
+            storename[i] = intent.getStringExtra("storename["+i+"]");
+            storekind[i] = intent.getStringExtra("storekind["+i+"]");
+        }
         Log.v("알림", "현재 lat "+mlat);
         Log.v("알림", "현재 lng "+mlng);
+
+        Log.v("알림", "첫 "+lat[1]);
+        Log.v("알림", "첫 "+lng[1]);
+        Log.v("알림", "성공 "+storekind[1]);
 
         for(int i=0;i<10;i++){
             strings[i] = "";
             name[i]="";
             price[i] = "";
             priced[i]="";
-            storekind[i] = "";
-            storename[i]="";
-            lat[i] = 0.0;
-            lng[i]=0.0;
             date[i]="";
         }
 
@@ -226,7 +229,7 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback,Goo
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 long a = Long.parseLong(dataSnapshot.child("date").getValue().toString());
                 long b = Long.parseLong(now_date);
-                if(a>b){
+                if((a>b)&&k<10){
                     strings[k] = dataSnapshot.child("title").getValue().toString();
                     name[k] = dataSnapshot.child("foodName").getValue().toString();
                     date[k] = dataSnapshot.child("date").getValue().toString();
@@ -236,9 +239,6 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback,Goo
                     storename[k] = dataSnapshot.child("storeName").getValue().toString();
                     priced[k] = dataSnapshot.child("price").getValue().toString();
                     price[k] = dataSnapshot.child("saledprice").getValue().toString();
-                    all_lat[k] = Double.parseDouble(dataSnapshot.child("lat").getValue().toString());
-                    all_lng[k] = Double.parseDouble(dataSnapshot.child("lng").getValue().toString());
-                    all_storename[k] = dataSnapshot.child("storeName").getValue().toString();
 
                     Log.v("알림", k+"date "+dataSnapshot.child("date").getValue());
                     apply(dataSnapshot.child("title").getValue().toString(),k);
@@ -339,7 +339,7 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback,Goo
 
         for(int i = 0; i< 10; i++){
             LatLng addlocation = new LatLng(lat[i],lng[i]);
-            mMap.addMarker(new MarkerOptions().position(addlocation).title(name[i]));
+            mMap.addMarker(new MarkerOptions().position(addlocation).title(storekind[i]+storename[i]));
         }
 
 
