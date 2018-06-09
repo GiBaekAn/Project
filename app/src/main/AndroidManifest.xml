@@ -33,12 +33,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    <activity android:name=".Mainpage"/>
+    <activity android:name=".Mainpage"
+        android:launchMode="singleTask"/>
         <activity android:name=".MenuDetails"/>
         <activity android:name=".InputMenu"/>
 
         <activity android:name=".CreateAccount"/>
-        <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyCa5tYSZjCq25NhyyY2Y7hC6q7J_VZ6V5k"/>
+        <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyARE_3gJoedK4pkWSNPVo7UvE15ipvuKX0"/>
         <uses-library android:name="com.google.android.maps" />
 
     </application>

@@ -25,7 +25,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -34,13 +37,11 @@ public class MainActivity extends AppCompatActivity {
     private final String TAG = getClass().getSimpleName();
     EditText etid,etpw;
     Button login,create;
+    double mlat,mlng;
 
     private GpsInfo gps;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-
-    double lat;
-    double lng;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,10 +50,28 @@ public class MainActivity extends AppCompatActivity {
 
         Fresco.initialize(this);
         getSupportActionBar().hide();
+
         Intent intent = new Intent(MainActivity.this, CustomAnimationDialog.class);
         startActivity(intent);
 
        // initView();
+        PermissionListener permissionlistener = new PermissionListener() {
+            @Override
+            public void onPermissionGranted() {
+                Toast.makeText(MainActivity.this, "Permission Granted", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+                Toast.makeText(MainActivity.this, "Permission Denied\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show();
+            }
+        };
+        new TedPermission(this)
+                .setPermissionListener(permissionlistener)
+                .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission] ")
+                .setPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE,android.Manifest.permission.CAMERA, android.Manifest.permission.INTERNET, android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                .check();
+
 
         etid = findViewById(R.id.etid);
         etpw = findViewById(R.id.etpw);
@@ -77,22 +96,28 @@ public class MainActivity extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 Toast.makeText(MainActivity.this,
                         "로그인 중입니다...",
                         Toast.LENGTH_SHORT).show();
+
                 //final String email = etid.getText().toString().trim();
                 //final String passwd = etpw.getText().toString().trim();
                 final String email = "aaattt@naver.com";
                 final String passwd = "aaattt";
+
+                ////////////////////////////////////////////////////////////////////////////////////////////////////////////쉬운 로그인을 위해 잠시 바꿔둔 상태
+
                 gps = new GpsInfo(MainActivity.this);
-                // GPS 사용유무 가져오기
                 if (gps.isGetLocation()) {
                     final double latitude = gps.getLatitude();
                     final double longitude = gps.getLongitude();
-                    lat = latitude;
-                    lng = longitude;
+                    mlat = latitude;
+                    mlng = longitude;
+                    Log.v("알림","aa:"+String.valueOf(mlat));
+                    Log.v("알림","bb:"+String.valueOf(mlng));
                 }
-                ////////////////////////////////////////////////////////////////////////////////////////////////////////////쉬운 로그인을 위해 잠시 바꿔둔 상태
+
                 Log.d(TAG, "Email:" + email + " Password:" + passwd);
                 //이메일과 비밀번호를 확인하는 부분
                 if(isValidEmail(email) && isValidPasswd(passwd)){
@@ -101,7 +126,9 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if(task.isSuccessful()){
-                                        Intent intent = new Intent(MainActivity.this,Mainpage.class);
+                                        Intent intent = new Intent(getApplicationContext(),Mainpage.class);
+                                        intent.putExtra("mlat",mlat);
+                                        intent.putExtra("mlng",mlng);
                                         startActivity(intent);
                                         Toast.makeText(MainActivity.this,
                                                 "로그인 성공",
@@ -159,7 +186,6 @@ public class MainActivity extends AppCompatActivity {
 //        mAuth.removeAuthStateListener(mAuthListener);
 //        }
 //    }
-
 
 
     private boolean isValidPasswd(String str){
@@ -224,14 +250,7 @@ public class MainActivity extends AppCompatActivity {
 //
 //    }
 
-    public double getLat(){
-        Log.d("로그인시 lat값:", String.valueOf(lat));
-        return lat;
-    }
-    public double getLng(){
-        Log.d("로그인시 lng값:", String.valueOf(lng));
-        return lng;
-    }
+
 
 
 
