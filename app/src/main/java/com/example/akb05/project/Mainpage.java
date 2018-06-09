@@ -79,6 +79,10 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback,Goo
     String[] storekind = new String[10];
     String[] date = new String[10];
 
+    double[] all_lat = new double[10000];
+    double[] all_lng = new double[10000];
+    String[] all_storename = new String[10000];
+
     Double mlat,mlng;
     String temp,now_date;
     TextView time1,time2,time3,time4;
@@ -136,6 +140,8 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback,Goo
                         Toast.LENGTH_SHORT).show();
                 finish();
                 Intent intent = new Intent(getApplicationContext(),Mainpage.class);
+                intent.putExtra("mlat",mlat);
+                intent.putExtra("mlng",mlng);
                 startActivity(intent);
             }
         });
@@ -230,13 +236,18 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback,Goo
                     storename[k] = dataSnapshot.child("storeName").getValue().toString();
                     priced[k] = dataSnapshot.child("price").getValue().toString();
                     price[k] = dataSnapshot.child("saledprice").getValue().toString();
+                    all_lat[k] = Double.parseDouble(dataSnapshot.child("lat").getValue().toString());
+                    all_lng[k] = Double.parseDouble(dataSnapshot.child("lng").getValue().toString());
+                    all_storename[k] = dataSnapshot.child("storeName").getValue().toString();
+
                     Log.v("알림", k+"date "+dataSnapshot.child("date").getValue());
                     apply(dataSnapshot.child("title").getValue().toString(),k);
                     k++;
                 }
                 else{
                     dataSnapshot.getRef().removeValue();
-                    Log.v("알림", "Value 삭제"); //휘발성 데이터 구현
+                    delete(dataSnapshot.child("title").getValue().toString());
+                    Log.v("알림", "Value 삭제"); //휘발성 database 구현
                 }
             }
 
@@ -289,25 +300,18 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback,Goo
             });
         }
 
-
-
         SupportMapFragment mapFragment = (SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
 
-    public void apply(String a,int y){
+    public void apply(String a,int y){ // Glide를 통하여 제품의 사진을 불러온다
         final int p=y;
         storageReference = FirebaseStorage.getInstance().getReference().child("photo/"+a);
- //       Log.v("알림", "string ::  " + a);
- //       Log.v("알림", "int ::  " + y);
         storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
                 temp = uri.toString();
                 Glide.with(getBaseContext()).load(temp).centerCrop().override(300,300).placeholder(R.drawable.placeholder).into(imageButtons[p]);
-                //Glide.with(getBaseContext()).load(temp).override(300,300).into(imageButtons[i]);
- //               Log.v("알림", "This is temp ::  " + uri.toString());
-                // Got the download URL for 'users/me/profile.png'
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -315,12 +319,10 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback,Goo
                 // Handle any errors
             }
         });
+    }
 
-        //Uri uri = Uri.parse("https://raw.githubusercontent.com/facebook/fresco/master/docs/static/logo.png");
-        //storageReference = storage.getReference().child("photo/21365.png");
-        //Uri abc = Uri.parse("https://firebasestorage.googleapis.com/v0/b/project-245fb.appspot.com/o/photo%2F21365?alt=media&token=fd4dc11b-10e1-4aea-ae51-425932584d31");
-
-
+    public void delete(String b){
+        FirebaseStorage.getInstance().getReference().child("photo/"+b).delete(); // 휘발성 Storage 구현
     }
 
     @Override
@@ -330,18 +332,18 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback,Goo
         MarkerOptions markerOptions = new MarkerOptions();
         LatLng mylocation = new LatLng(mlat,mlng);
         markerOptions.position(mylocation);
+        mMap.addMarker(markerOptions.title("현재위치"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mylocation,16));
+        mMap.setOnInfoWindowClickListener(this);
+
 
         for(int i = 0; i< 10; i++){
             LatLng addlocation = new LatLng(lat[i],lng[i]);
-            mMap.addMarker(new MarkerOptions().position(addlocation).title("추가된다!"));
-
+            mMap.addMarker(new MarkerOptions().position(addlocation).title(name[i]));
         }
 
 
 
-        mMap.addMarker(markerOptions.title("현재위치"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mylocation,16));
-        mMap.setOnInfoWindowClickListener(this);
         Log.v("알림","lat값은??"+ String.valueOf(mlat));
         Log.v("알림","lat값은??"+ String.valueOf(mlng));
 
