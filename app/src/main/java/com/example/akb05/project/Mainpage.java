@@ -234,6 +234,10 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback,Goo
                     apply(dataSnapshot.child("title").getValue().toString(),k);
                     k++;
                 }
+                else{
+                    dataSnapshot.getRef().removeValue();
+                    Log.v("알림", "Value 삭제"); //휘발성 데이터 구현
+                }
             }
 
             @Override
