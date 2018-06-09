@@ -113,22 +113,6 @@ public class InputMenu extends Activity implements View.OnClickListener {
 //            lng = userLocation.getLongitude();
 //        }
 
-        PermissionListener permissionlistener = new PermissionListener() {
-            @Override
-            public void onPermissionGranted() {
-                Toast.makeText(InputMenu.this, "Permission Granted", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onPermissionDenied(ArrayList<String> deniedPermissions) {
-                Toast.makeText(InputMenu.this, "Permission Denied\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show();
-            }
-        };
-        new TedPermission(this)
-                .setPermissionListener(permissionlistener)
-                .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission] ")
-                .setPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE,android.Manifest.permission.CAMERA, Manifest.permission.INTERNET, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
-                .check();
 
 
         t1 = findViewById(R.id.textView12);
@@ -243,7 +227,6 @@ public class InputMenu extends Activity implements View.OnClickListener {
             String price = et_price.getText().toString().trim();
             select = spinner.getSelectedItem().toString();
             String storename = et_storename.getText().toString().trim();
-            String title = photoURI.getLastPathSegment();
             int hour = tPicker.getHour();
             int minute = tPicker.getMinute();
             String month_s = month+"";
@@ -256,18 +239,21 @@ public class InputMenu extends Activity implements View.OnClickListener {
             if(minute<10){minute_s = "0"+minute;}
             String date = year+month_s+day_s+hour_s+minute_s;
 
-
             if(foodname.equals("")||saledprice.equals("")||price.equals("")||year==0||month==0||day==0||hour==0||minute==0||lat==0.0||lng==0.0||storename.equals("")||!photo){
                 Toast.makeText(InputMenu.this,
                         "빈 항목이 있는지 확인해주세요.",
                         Toast.LENGTH_LONG).show();
             }
             else{
+
+                String title = photoURI.getLastPathSegment();
                 foodDTO food = new foodDTO(title,foodname,saledprice,price,date,lat,lng,select,storename);
                 databaseReference.child("food").push().setValue(food);
                 Toast.makeText(InputMenu.this,
                         "등록되었습니다.",
                         Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(InputMenu.this, Mainpage.class);
+                startActivity(intent);
                 finish();
             }
         }

@@ -9,6 +9,7 @@ import android.media.Image;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
@@ -32,6 +33,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -43,6 +45,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.maps.android.clustering.ClusterManager;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import com.squareup.picasso.Callback;
@@ -56,7 +59,8 @@ import java.util.Calendar;
  * Created by dong on 2018-05-21.
  */
 
-public class Mainpage extends FragmentActivity implements OnMapReadyCallback{
+public class Mainpage extends FragmentActivity implements OnMapReadyCallback,GoogleMap.OnInfoWindowClickListener{
+
 
     LinearLayout MapContainer;
     LinearLayout Hotdeal;
@@ -64,26 +68,47 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback{
     StorageReference storageReference;
     DatabaseReference databaseReference;
 
-    // Uri a = Uri.parse(storageReference.toString().trim());
+    String[] strings = new String[10];
+    ImageButton[] imageButtons = new ImageButton[10];
+    String[] name = new String[10];
+    String[] price = new String[10];
+    String[] priced = new String[10];
+    double[] lat = new double[10];
+    double[] lng = new double[10];
+    String[] storename = new String[10];
+    String[] storekind = new String[10];
+    String[] date = new String[10];
 
-
-    String[] strings = new String[5];
-    ImageButton[] imageButtons = new ImageButton[5];
+    Double mlat,mlng;
     String temp,now_date;
-    ImageButton menuimg;
     TextView time1,time2,time3,time4;
     Button inputmenubtn;
+    Button refresh;
     // 오버레이 관리자
 
     GoogleMap mMap;
 
 
-    ///////////////////////////////////////////////////////////  HOT DEAL 시계 구현
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mainpage);
-        for(int i=0;i<5;i++){
+        Intent intent = getIntent();
+
+        mlat = intent.getDoubleExtra("mlat",0.0);
+        mlng = intent.getDoubleExtra("mlng",0.0);
+        Log.v("알림", "현재 lat "+mlat);
+        Log.v("알림", "현재 lng "+mlng);
+
+        for(int i=0;i<10;i++){
             strings[i] = "";
+            name[i]="";
+            price[i] = "";
+            priced[i]="";
+            storekind[i] = "";
+            storename[i]="";
+            lat[i] = 0.0;
+            lng[i]=0.0;
+            date[i]="";
         }
 
         Hotdeal = findViewById(R.id.hotdeal);
@@ -92,12 +117,25 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback{
 
         MapContainer = (LinearLayout) findViewById(R.id.mapcontainer);
         inputmenubtn = findViewById(R.id.inputmenubtn);
+        refresh = findViewById(R.id.refresh);
 
 
         inputmenubtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), InputMenu.class);
+                startActivity(intent);
+            }
+        });
+
+        refresh.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(Mainpage.this,
+                        "새로고침을 실행합니다",
+                        Toast.LENGTH_SHORT).show();
+                finish();
+                Intent intent = new Intent(getApplicationContext(),Mainpage.class);
                 startActivity(intent);
             }
         });
@@ -132,7 +170,7 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback{
                         public void run() {
                             Calendar calendar = Calendar.getInstance(); // 칼렌다 변수
                             int year = calendar.get(Calendar.YEAR); // 년
-                            int month = calendar.get(Calendar.MONTH); // 월
+                            int month = calendar.get(Calendar.MONTH) +1; // 월
                             int day = calendar.get(Calendar.DAY_OF_MONTH); // 일
                             int hour = calendar.get(Calendar.HOUR_OF_DAY); // 시
                             int minute = calendar.get(Calendar.MINUTE); // 분
@@ -142,7 +180,7 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback{
                             String hour_s = hour+"";
                             String minute_s = minute+"";
                             String second_s = second+"";
-                            if(month<10){month_s = "0"+month;}
+                            if(month<9){month_s = "0"+month;}
                             if(day<10){day_s = "0"+day;}
                             if(hour<10){hour_s = "0"+hour;}
                             if(minute<10){minute_s = "0"+minute;}
@@ -165,34 +203,37 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback{
         thread.start();
         ///////////////////////////////////////////////////////////  HOT DEAL 시계 구현
 
-        Log.v("알림", "date는 "+now_date);
+        Log.v("알림", "현재 date는 "+now_date);
 
 
 
 
-        for(int i=0;i<5;i++){
+        for(int i=0;i<10;i++){
             imageButtons[i] = new ImageButton(this);
-            imageButtons[i].setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent detailmenu = new Intent(getApplicationContext(), MenuDetails.class);
-                    startActivity(detailmenu);
-                }
-            });
         }
 
 
-        //Query query = databaseReference.child("food").child("title").orderByValue().startAt(now_date).limitToFirst(5);
-
-        databaseReference.child("food").addChildEventListener(new ChildEventListener() {
+        databaseReference.child("food").orderByChild("date").addChildEventListener(new ChildEventListener() {
 
             int k =0;
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                //strings[k++]=dataSnapshot.child("title").getValue().toString();
-                Log.v("알림", "strings "+dataSnapshot.child("title").getValue());
-                apply(dataSnapshot.child("title").getValue().toString(),k);
-                k++;
+                long a = Long.parseLong(dataSnapshot.child("date").getValue().toString());
+                long b = Long.parseLong(now_date);
+                if(a>b){
+                    strings[k] = dataSnapshot.child("title").getValue().toString();
+                    name[k] = dataSnapshot.child("foodName").getValue().toString();
+                    date[k] = dataSnapshot.child("date").getValue().toString();
+                    lat[k] = Double.parseDouble(dataSnapshot.child("lat").getValue().toString());
+                    lng[k] = Double.parseDouble(dataSnapshot.child("lng").getValue().toString());
+                    storekind[k] = dataSnapshot.child("storekind").getValue().toString();
+                    storename[k] = dataSnapshot.child("storeName").getValue().toString();
+                    priced[k] = dataSnapshot.child("price").getValue().toString();
+                    price[k] = dataSnapshot.child("saledprice").getValue().toString();
+                    Log.v("알림", k+"date "+dataSnapshot.child("date").getValue());
+                    apply(dataSnapshot.child("title").getValue().toString(),k);
+                    k++;
+                }
             }
 
             @Override
@@ -223,8 +264,25 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback{
         //SimpleDraweeView draweeView = (SimpleDraweeView) findViewById(R.id.aa);
         //draweeView.setImageURI(abc);
 
-        for(int i=0;i<5;i++){
+        for(int i=0;i<10;i++){
             Hotdeal.addView(imageButtons[i]);
+            final int temp = i;
+            imageButtons[i].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent detailmenu = new Intent(getApplicationContext(), MenuDetails.class);
+                    detailmenu.putExtra("strings",strings[temp]);
+                    detailmenu.putExtra("date",date[temp]);
+                    detailmenu.putExtra("name",name[temp]);
+                    detailmenu.putExtra("price",price[temp]);
+                    detailmenu.putExtra("priced",priced[temp]);
+                    detailmenu.putExtra("storename",storename[temp]);
+                    detailmenu.putExtra("storekind",storekind[temp]);
+                    detailmenu.putExtra("lat",lat[temp]);
+                    detailmenu.putExtra("lng",lng[temp]);
+                    startActivity(detailmenu);
+                }
+            });
         }
 
 
@@ -234,18 +292,17 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback{
     }
 
     public void apply(String a,int y){
-
         final int p=y;
         storageReference = FirebaseStorage.getInstance().getReference().child("photo/"+a);
-        Log.v("알림", "string ::  " + a);
-        Log.v("알림", "int ::  " + y);
+ //       Log.v("알림", "string ::  " + a);
+ //       Log.v("알림", "int ::  " + y);
         storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
                 temp = uri.toString();
-                Glide.with(getBaseContext()).load(temp).override(300,300).into(imageButtons[p]);
+                Glide.with(getBaseContext()).load(temp).centerCrop().override(300,300).placeholder(R.drawable.placeholder).into(imageButtons[p]);
                 //Glide.with(getBaseContext()).load(temp).override(300,300).into(imageButtons[i]);
-                Log.v("알림", "This is temp ::  " + uri.toString());
+ //               Log.v("알림", "This is temp ::  " + uri.toString());
                 // Got the download URL for 'users/me/profile.png'
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -266,18 +323,30 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback{
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        LatLng ajou = new LatLng(37.279940, 127.043867);
-
         MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(ajou).title("여기는 아주대학교");
-
-        mMap.addMarker(markerOptions);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(ajou));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ajou,16));
+        LatLng mylocation = new LatLng(mlat,mlng);
+        //mMap.addMarker(markerOptions);
+        //mMap.addMarker(new MarkerOptions().position(mylocation).title("등록한편의점"));
+        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mylocation, 14.0f));
+        //ClusterManager<Storage> mClusterManager = new ClusterManager<Storage>(this,mMap);
+        //mMap.setOnCameraChangeListener(mClusterManager);
+        //mMap.setOnInfoWindowClickListener(this);///////////////////////////////////////////////////////////////////////////////////////////////안되는부분
+        Log.v("알림","lat값은??"+ String.valueOf(mlat));
+        Log.v("알림","lat값은??"+ String.valueOf(mlng));
 
     }
+    public double getLat(){
+        return mlat;
+    }
+    public double getLng(){
+        return mlng;
+    }
 
-
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        Intent intent = new Intent(getApplicationContext(), MenuDetails.class);/////////////////////////////////////////////////////////////////바꿔야함!
+        startActivity(intent);
+    }
 
 }
 /////////////////////////////////////////////////////// 구글맵 사용하는 코드
