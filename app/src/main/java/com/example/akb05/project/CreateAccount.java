@@ -13,6 +13,7 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -30,17 +31,16 @@ public class CreateAccount extends AppCompatActivity {
     EditText createid;
     EditText createpw;
     EditText checkpw;
-    Button createbtn;
-    Button cancelbtn;
+    ImageView createbtn;
+    ImageView cancelbtn;
+
     private final String TAG = getClass().getSimpleName();
     private FirebaseAuth mAuth;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.createaccount);
-
-
+        getSupportActionBar().hide();
         mAuth = FirebaseAuth.getInstance();
 
         createid = findViewById(R.id.createid);

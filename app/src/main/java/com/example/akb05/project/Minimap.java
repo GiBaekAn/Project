@@ -51,14 +51,8 @@ public class Minimap extends FragmentActivity implements OnMapReadyCallback  {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         LatLng mylocation = new LatLng(lat,lng);
-        mMap.addMarker(new MarkerOptions().position(mylocation).title("받아와서 찍은거"));
+        mMap.addMarker(new MarkerOptions().position(mylocation).title("선택하신 편의점 위치입니다"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mylocation,16));
-
-        Log.d("알림","지도에찍을lat??"+ String.valueOf(lat));
-        Log.d("알림","지도에찍을lng??"+ String.valueOf(lng));
-        //ClusterManager<Storage> mClusterManager = new ClusterManager<Storage>(this,mMap);
-        //mMap.setOnCameraChangeListener(mClusterManager);
-        //mMap.setOnInfoWindowClickListener(this);///////////////////////////////////////////////////////////////////////////////////////////////안되는부분
 
 
     }

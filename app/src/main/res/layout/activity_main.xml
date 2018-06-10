@@ -9,67 +9,39 @@
 
     <EditText
         android:id="@+id/etid"
-        android:layout_width="wrap_content"
+        android:layout_width="130dp"
         android:layout_height="wrap_content"
-        android:layout_x="144dp"
-        android:layout_y="90dp"
+        android:layout_x="130dp"
+        android:layout_y="162dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text=""
-        tools:layout_editor_absoluteX="94dp"
-        tools:layout_editor_absoluteY="178dp" />
+        android:singleLine="true"
+        android:text="" />
 
     <EditText
         android:id="@+id/etpw"
-        android:layout_width="wrap_content"
+        android:layout_width="130dp"
         android:layout_height="wrap_content"
-        android:layout_x="144dp"
-        android:layout_y="148dp"
+        android:layout_x="130dp"
+        android:layout_y="222dp"
         android:ems="10"
         android:inputType="textPassword"
-        tools:layout_editor_absoluteX="56dp"
-        tools:layout_editor_absoluteY="140dp" />
+        android:singleLine="true" />
 
-    <TextView
-        android:id="@+id/tv2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_x="49dp"
-        android:layout_y="102dp"
-        android:text="@string/id"
-        tools:layout_editor_absoluteX="52dp"
-        tools:layout_editor_absoluteY="103dp" />
-
-    <TextView
-        android:id="@+id/tv1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_x="51dp"
-        android:layout_y="158dp"
-        android:text="@string/pw"
-        tools:layout_editor_absoluteX="72dp"
-        tools:layout_editor_absoluteY="162dp" />
-
-    <Button
+    <ImageView
         android:id="@+id/login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_x="120dp"
-        android:layout_y="217dp"
-        android:background="@color/colorAccent"
-        android:text="@string/login"
-        tools:layout_editor_absoluteX="67dp"
-        tools:layout_editor_absoluteY="230dp" />
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_x="300dp"
+        android:layout_y="160dp"
+        android:src="@drawable/login2" />
 
-    <Button
+    <ImageView
         android:id="@+id/create"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_x="221dp"
-        android:layout_y="217dp"
+        android:layout_width="360dp"
+        android:layout_height="60dp"
+        android:layout_x="80dp"
+        android:layout_y="280dp"
+        android:src="@drawable/create" />
 
-        android:background="@color/colorAccent"
-        android:text="@string/create"
-        tools:layout_editor_absoluteX="106dp"
-        tools:layout_editor_absoluteY="255dp" />
 </AbsoluteLayout>

@@ -37,7 +37,6 @@
         android:launchMode="singleTask"/>
         <activity android:name=".MenuDetails"/>
         <activity android:name=".InputMenu"/>
-        <activity android:name=".StorageDetails"/>
         <activity android:name=".CreateAccount"/>
         <activity android:name=".Minimap"/>
         <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyARE_3gJoedK4pkWSNPVo7UvE15ipvuKX0"/>

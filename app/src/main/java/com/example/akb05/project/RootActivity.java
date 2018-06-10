@@ -18,16 +18,6 @@ public class RootActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_root);
-//
-//        btnStorage.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(RootActivity.this, StorageActivity.class);
-//                startActivityForResult(intent , 101);
-//            }
-//        });
-
 
         mAuth = FirebaseAuth.getInstance();
         if(mAuth.getCurrentUser() != null){

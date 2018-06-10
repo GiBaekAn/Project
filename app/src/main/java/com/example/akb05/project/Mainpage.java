@@ -32,6 +32,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -68,16 +69,16 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback,Goo
     StorageReference storageReference;
     DatabaseReference databaseReference;
 
-    String[] strings = new String[10];
+    String[] strings = new String[100];
     ImageButton[] imageButtons = new ImageButton[10];
-    String[] name = new String[10];
-    String[] price = new String[10];
-    String[] priced = new String[10];
-    double[] lat = new double[10];
-    double[] lng = new double[10];
-    String[] storename = new String[10];
-    String[] storekind = new String[10];
-    String[] date = new String[10];
+    String[] name = new String[100];
+    String[] price = new String[100];
+    String[] priced = new String[100];
+    double[] lat = new double[100];
+    double[] lng = new double[100];
+    String[] storename = new String[100];
+    String[] storekind = new String[100];
+    String[] date = new String[100];
 
     Double mlat,mlng;
     String temp,now_date;
@@ -97,7 +98,7 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback,Goo
         mlat = intent.getDoubleExtra("mlat",0.0);
         mlng = intent.getDoubleExtra("mlng",0.0);
 
-        for(int i=0;i<10;i++){
+        for(int i=0;i<100;i++){
             lat[i] = intent.getDoubleExtra("lat["+i+"]",0.0);
             lng[i] = intent.getDoubleExtra("lng["+i+"]",0.0);
             storename[i] = intent.getStringExtra("storename["+i+"]");
@@ -106,17 +107,14 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback,Goo
         Log.v("알림", "현재 lat "+mlat);
         Log.v("알림", "현재 lng "+mlng);
 
-        Log.v("알림", "첫 "+lat[1]);
-        Log.v("알림", "첫 "+lng[1]);
-        Log.v("알림", "성공 "+storekind[1]);
-
-        for(int i=0;i<10;i++){
-            strings[i] = "";
-            name[i]="";
-            price[i] = "";
-            priced[i]="";
-            date[i]="";
-        }
+//
+//        for(int i=0;i<100;i++){
+//            strings[i] = "";
+//            name[i]="";
+//            price[i] = "";
+//            priced[i]="";
+//            date[i]="";
+//        }
 
         Hotdeal = findViewById(R.id.hotdeal);
         databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -145,6 +143,12 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback,Goo
                 Intent intent = new Intent(getApplicationContext(),Mainpage.class);
                 intent.putExtra("mlat",mlat);
                 intent.putExtra("mlng",mlng);
+                for(int i=0;i<100;i++){
+                    intent.putExtra("lat["+i+"]",lat[i]);
+                    intent.putExtra("lng["+i+"]",lng[i]);
+                    intent.putExtra("storename["+i+"]",storename[i]);
+                    intent.putExtra("storekind["+i+"]",storekind[i]);
+                }
                 startActivity(intent);
             }
         });
@@ -212,8 +216,6 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback,Goo
         thread.start();
         ///////////////////////////////////////////////////////////  HOT DEAL 시계 구현
 
-        Log.v("알림", "현재 date는 "+now_date);
-
 
 
 
@@ -229,7 +231,7 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback,Goo
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 long a = Long.parseLong(dataSnapshot.child("date").getValue().toString());
                 long b = Long.parseLong(now_date);
-                if((a>b)&&k<10){
+                if((a>b)&&k<100){
                     strings[k] = dataSnapshot.child("title").getValue().toString();
                     name[k] = dataSnapshot.child("foodName").getValue().toString();
                     date[k] = dataSnapshot.child("date").getValue().toString();
@@ -239,16 +241,16 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback,Goo
                     storename[k] = dataSnapshot.child("storeName").getValue().toString();
                     priced[k] = dataSnapshot.child("price").getValue().toString();
                     price[k] = dataSnapshot.child("saledprice").getValue().toString();
-
-                    Log.v("알림", k+"date "+dataSnapshot.child("date").getValue());
+                    //Log.v("알림", k+"date "+dataSnapshot.child("date").getValue());
                     apply(dataSnapshot.child("title").getValue().toString(),k);
                     k++;
                 }
-                else{
+                else if(a<b){
                     dataSnapshot.getRef().removeValue();
                     delete(dataSnapshot.child("title").getValue().toString());
                     Log.v("알림", "Value 삭제"); //휘발성 database 구현
                 }
+                else{}
             }
 
             @Override
@@ -273,13 +275,7 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback,Goo
         });
 
 
-        //Glide.with(this).using(new FirebaseImageLoader()).load(storage.getReferenceFromUrl(uri.toString())).into(test);
-        //Glide.with(this).load("https://firebasestorage.googleapis.com/v0/b/project-245fb.appspot.com/o/photo%2F1201266192?alt=media&token=df029928-9b2a-4dc4-aa6c-99172d0a2280").into(aa);
-        //Glide.with(this).using(new FirebaseImageLoader()).load(storageReference).into(test);
-        //SimpleDraweeView draweeView = (SimpleDraweeView) findViewById(R.id.aa);
-        //draweeView.setImageURI(abc);
-
-        for(int i=0;i<10;i++){
+        for(int i=0;i<10;i++){  //HOT DEAL 상품은 오직 10개만 만든다.
             Hotdeal.addView(imageButtons[i]);
             final int temp = i;
             imageButtons[i].setOnClickListener(new View.OnClickListener() {
@@ -333,20 +329,14 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback,Goo
         LatLng mylocation = new LatLng(mlat,mlng);
         markerOptions.position(mylocation);
         mMap.addMarker(markerOptions.title("현재위치"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mylocation,15));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mylocation,16));
         mMap.setOnInfoWindowClickListener(this);
 
-        ClusterManager<Storage> mClusterManager = new ClusterManager<Storage>(this,mMap);
-        mMap.setOnCameraChangeListener(mClusterManager);
 
-        for(int i = 0; i< 10; i++){
-            mClusterManager.addItem(new Storage(new LatLng(lat[i],lng[i]),storekind[i]+storename[i]));
-
-//            Log.v("알림",i+"번째 lat값은??"+ String.valueOf(lat[i]));
-//            Log.v("알림",i+"번째 lat값은??"+ String.valueOf(lng[i]));
+        for(int i = 0; i< 100; i++){
+            LatLng addlocation = new LatLng(lat[i],lng[i]);
+            mMap.addMarker(new MarkerOptions().position(addlocation).title(storekind[i]+" / "+storename[i]));
         }
-
-
 
 
     }
@@ -359,12 +349,24 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback,Goo
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        Intent intent = new Intent(getApplicationContext(), StorageDetails.class);
-        double maplat = mlat;
-        double maplng = mlng;
-        intent.putExtra("lat",maplat);
-        intent.putExtra("lng",maplng);
-        startActivity(intent);
+        int temp = Integer.parseInt(marker.getId().substring(1));
+        String store = marker.getTitle();
+        if(temp>0) {
+            temp--;
+            Intent intent = new Intent(getApplicationContext(), MenuDetails.class);
+            Intent detailmenu = new Intent(getApplicationContext(), MenuDetails.class);
+            detailmenu.putExtra("strings",strings[temp]);
+            detailmenu.putExtra("store",store);
+            detailmenu.putExtra("date",date[temp]);
+            detailmenu.putExtra("name",name[temp]);
+            detailmenu.putExtra("price",price[temp]);
+            detailmenu.putExtra("priced",priced[temp]);
+            detailmenu.putExtra("storename",storename[temp]);
+            detailmenu.putExtra("storekind",storekind[temp]);
+            detailmenu.putExtra("lat",lat[temp]);
+            detailmenu.putExtra("lng",lng[temp]);
+            startActivity(detailmenu);
+        }
     }
 
 }

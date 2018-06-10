@@ -10,8 +10,8 @@
     android:background="@drawable/basic">
 
     <ScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -24,30 +24,28 @@
                 android:baselineAligned="true"
                 android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="150dp"
+                <ImageView
+                    android:src="@drawable/hotdeal"
+                    android:layout_width="200dp"
                     android:layout_height="wrap_content"
-                    android:text="HOT DEAL !"
-                    android:textColor="@android:color/holo_red_dark"
-                    android:textSize="30sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <LinearLayout
-                    android:layout_width="150dp"
+                    android:layout_width="100dp"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/time1"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="00월 00일" />
 
                     <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_weight="10"
                         android:orientation="horizontal">
 
@@ -97,8 +95,10 @@
 
                     <Button
                         android:id="@+id/refresh"
-                        android:layout_width="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:background="@color/colorAccent"
                         android:text="새로고침"/>
                 </LinearLayout>
 
@@ -125,19 +125,17 @@
 
             </HorizontalScrollView>
 
-            <TextView
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="근처 편의점"
-                android:textSize="18sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:src="@drawable/nearby"
+                android:layout_marginLeft="10dp"/>
 
 
             <LinearLayout
                 android:id="@+id/mapcontainer"
-                android:layout_width="343dp"
-                android:layout_height="213dp"
+                android:layout_width="360dp"
+                android:layout_height="350dp"
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"

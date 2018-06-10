@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
     private final String TAG = getClass().getSimpleName();
     EditText etid,etpw;
-    Button login,create;
+    ImageView login,create;
     double mlat,mlng;
     String now_date;
     double[] lat = new double[10];
@@ -164,12 +164,8 @@ public class MainActivity extends AppCompatActivity {
                         "로그인 중입니다...",
                         Toast.LENGTH_SHORT).show();
 
-                //final String email = etid.getText().toString().trim();
-                //final String passwd = etpw.getText().toString().trim();
-                final String email = "aaattt@naver.com";
-                final String passwd = "aaattt";
-
-                ////////////////////////////////////////////////////////////////////////////////////////////////////////////쉬운 로그인을 위해 잠시 바꿔둔 상태
+                final String email = etid.getText().toString().trim();
+                final String passwd = etpw.getText().toString().trim();
 
                 gps = new GpsInfo(MainActivity.this);
                 if (gps.isGetLocation()) {
@@ -212,13 +208,6 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                 }
                             });
-                    // 로그인 클릭 동시에 메인메뉴로 이동
-
-//                    if(success){
-//                        Intent mainintent = new Intent(getApplicationContext(), Mainpage.class);
-//                        startActivity(mainintent);
-//                    }
-
                 } else {
                     Toast.makeText(MainActivity.this,
                             "Check Email or Password",
@@ -231,33 +220,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(),CreateAccount.class);
                 startActivity(intent);
-//                String email = etid.getText().toString().trim();
-//                String passwd = etpw.getText().toString().trim();
-//                Log.d(TAG, "Email:" + email + " Password:" + passwd);
-//                if(isValidEmail(email) && isValidPasswd(passwd)){
-//                    createAccount(email, passwd);
-//                } else {
-//                    Toast.makeText(MainActivity.this,
-//                            "Check Email or Password",
-//                            Toast.LENGTH_LONG).show();
-//                }
             }
         });
     }
-
-//    public void onStart(){
-//        super.onStart();
-//        mAuth.addAuthStateListener(mAuthListener);
-//    }
-//
-//    public void onStop(){
-//        super.onStop();
-//        if(mAuthListener!=null){
-//        mAuth.removeAuthStateListener(mAuthListener);
-//        }
-//    }
-
-
     private boolean isValidPasswd(String str){
             if(str == null || TextUtils.isEmpty(str)){
                 return false;
@@ -276,50 +241,6 @@ public class MainActivity extends AppCompatActivity {
             return Patterns.EMAIL_ADDRESS.matcher(str).matches();
         }
     }
-//    private void createAccount(String email, String passwd){
-//
-//        mAuth.createUserWithEmailAndPassword(email, passwd)
-//                .addOnCompleteListener(this,
-//                        new OnCompleteListener<AuthResult>() {
-//                            @Override
-//                            public void onComplete(@NonNull Task<AuthResult> task) {
-//                                Log.d(TAG, "Create Account:" + task.isSuccessful());
-//                                if(task.isSuccessful()){
-//                                    Log.d(TAG, "Account Create Complete");
-//                                    Log.d(TAG, "Current User:" + mAuth.getCurrentUser().getEmail());
-//
-//                                }else {
-//                                    Toast.makeText(MainActivity.this,
-//                                            "Create Account Failed", Toast.LENGTH_LONG).show();
-//                                }
-//                            }
-//                        });
-//
-////    }
-//    private void signinAccount(String email, String passwd){
-//
-//        //로그내용
-//        mAuth.signInWithEmailAndPassword(email, passwd)
-//                .addOnCompleteListener(this,
-//                        new OnCompleteListener<AuthResult>() {
-//                            @Override
-//                            public void onComplete(@NonNull Task<AuthResult> task) {
-//                                //Log.d(TAG, "Sign in Account:" + task.isSuccessful());
-//                                if(task.isSuccessful()){
-//                                    // Log.d(TAG, "Account Log in  Complete");
-//                                    //Log.d(TAG, "Current User:" + mAuth.getCurrentUser().getEmail());
-//                                    Toast.makeText(MainActivity.this,
-//                                            "Log In Complete", Toast.LENGTH_LONG).show();
-//                                    // Go go Main
-//                                }else {
-//                                    Toast.makeText(MainActivity.this,
-//                                            "Log In Failed", Toast.LENGTH_LONG).show();
-//                                }
-//                            }
-//                        });
-//
-//    }
-
 
 
 

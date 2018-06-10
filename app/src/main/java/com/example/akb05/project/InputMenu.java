@@ -104,16 +104,6 @@ public class InputMenu extends Activity implements View.OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.inputmenu);
-//
-//        settingGPS();
-//        Location userLocation = getMyLocation();
-//
-//        if(userLocation!=null){
-//            lat = userLocation.getLatitude();
-//            lng = userLocation.getLongitude();
-//        }
-
-
 
         t1 = findViewById(R.id.textView12);
         t2 = findViewById(R.id.textView14);
@@ -196,14 +186,11 @@ public class InputMenu extends Activity implements View.OnClickListener {
         @Override
         public void onClick(View view) {
 
-            //Uri file = Uri.fromFile(new File("path/to/images/rivers.jpg"));
             UploadTask uploadTask;
             if(photoURI!=null){
                 StorageReference riversRef = storageRef.child("photo/"+photoURI.getLastPathSegment());
                 photo = true;
                 uploadTask = riversRef.putFile(photoURI);
-               // temp_uri = uploadTask.getSnapshot().getDownloadUrl();
-                // Register observers to listen for when the download is done or if it fails
                 uploadTask.addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
@@ -212,8 +199,6 @@ public class InputMenu extends Activity implements View.OnClickListener {
                 }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-                        //temp_uri = taskSnapshot.getDownloadUrl();
                         Uri downloadUrl = taskSnapshot.getDownloadUrl();
                     }
                 });
@@ -332,46 +317,6 @@ public class InputMenu extends Activity implements View.OnClickListener {
         startActivityForResult(intent, FROM_CAMERA);
     }
 
-//    }
-//    public void takePhoto(){
-//        // 촬영 후 이미지 가져옴
-//        String state = Environment.getExternalStorageState();
-//        if(Environment.MEDIA_MOUNTED.equals(state)){
-//            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//            if(intent.resolveActivity(getPackageManager())!=null){
-//                File photoFile = null;
-//                try{
-//                    photoFile = createImageFile();
-//                }catch (IOException e){
-//                    e.printStackTrace();
-//                }
-//                if(photoFile!=null){
-//                    Uri providerURI = FileProvider.getUriForFile(this,getPackageName(),photoFile);
-//                    imgUri = providerURI;
-//                    intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, providerURI);
-//                    startActivityForResult(intent, FROM_CAMERA);
-//                }
-//            }
-//        }else{
-//            Log.v("알림", "저장공간에 접근 불가능");
-//            return;
-//        }
-//    }
-
-    public File createImageFile() throws IOException{
-        String imgFileName = System.currentTimeMillis() + ".jpg";
-        File imageFile= null;
-        File storageDir = new File(Environment.getExternalStorageDirectory() + "/Pictures", "ireh");
-        if(!storageDir.exists()){
-            //없으면 만들기
-            Log.v("알림","storageDir 존재 x " + storageDir.toString());
-            storageDir.mkdirs();
-        }
-        Log.v("알림","storageDir 존재함 " + storageDir.toString());
-        imageFile = new File(storageDir,imgFileName);
-        mCurrentPhotoPath = imageFile.getAbsolutePath();
-        return imageFile;
-    }
     public void galleryAddPic(){
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         File f = new File(mCurrentPhotoPath);

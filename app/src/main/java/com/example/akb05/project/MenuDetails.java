@@ -100,8 +100,6 @@ public class MenuDetails extends AppCompatActivity {
 
     public void apply(String data) {
         storageReference = FirebaseStorage.getInstance().getReference().child("photo/" + data);
-        //       Log.v("알림", "string ::  " + a);
-        //       Log.v("알림", "int ::  " + y);
         storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
