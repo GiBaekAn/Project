@@ -7,6 +7,14 @@
     android:background="@drawable/login"
     tools:context="com.example.akb05.project.MainActivity">
 
+    <TextView
+        android:id="@+id/adminlogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_x="50dp"
+        android:layout_y="50dp"
+        android:text="_______" />
+
     <EditText
         android:id="@+id/etid"
         android:layout_width="130dp"

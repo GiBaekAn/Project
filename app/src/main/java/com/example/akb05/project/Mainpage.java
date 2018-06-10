@@ -56,6 +56,8 @@ import com.squareup.picasso.Target;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import static com.example.akb05.project.MainActivity.admin;
+
 /**
  * Created by dong on 2018-05-21.
  */
@@ -69,16 +71,16 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback,Goo
     StorageReference storageReference;
     DatabaseReference databaseReference;
 
-    String[] strings = new String[100];
-    ImageButton[] imageButtons = new ImageButton[10];
-    String[] name = new String[100];
-    String[] price = new String[100];
-    String[] priced = new String[100];
-    double[] lat = new double[100];
-    double[] lng = new double[100];
-    String[] storename = new String[100];
-    String[] storekind = new String[100];
-    String[] date = new String[100];
+    String[] strings = new String[101];
+    ImageButton[] imageButtons = new ImageButton[11];
+    String[] name = new String[101];
+    String[] price = new String[101];
+    String[] priced = new String[101];
+    double[] lat = new double[101];
+    double[] lng = new double[101];
+    String[] storename = new String[101];
+    String[] storekind = new String[101];
+    String[] date = new String[101];
 
     Double mlat,mlng;
     String temp,now_date;
@@ -93,8 +95,17 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback,Goo
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mainpage);
-        Intent intent = getIntent();
+        Log.v("알림", "Admin Mode? : "+admin);
+//
+//        for(int i=0;i<100;i++){
+//            strings[i] = "";
+//            name[i]="";
+//            price[i] = "";
+//            priced[i]="";
+//            date[i]="";
+//        }
 
+        Intent intent = getIntent();
         mlat = intent.getDoubleExtra("mlat",0.0);
         mlng = intent.getDoubleExtra("mlng",0.0);
 
@@ -107,14 +118,7 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback,Goo
         Log.v("알림", "현재 lat "+mlat);
         Log.v("알림", "현재 lng "+mlng);
 
-//
-//        for(int i=0;i<100;i++){
-//            strings[i] = "";
-//            name[i]="";
-//            price[i] = "";
-//            priced[i]="";
-//            date[i]="";
-//        }
+
 
         Hotdeal = findViewById(R.id.hotdeal);
         databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -242,13 +246,15 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback,Goo
                     priced[k] = dataSnapshot.child("price").getValue().toString();
                     price[k] = dataSnapshot.child("saledprice").getValue().toString();
                     //Log.v("알림", k+"date "+dataSnapshot.child("date").getValue());
-                    apply(dataSnapshot.child("title").getValue().toString(),k);
+                    if(k<10){
+                        apply(dataSnapshot.child("title").getValue().toString(),k);
+                    }
                     k++;
                 }
-                else if(a<b){
+                else if(a<b&&admin){
                     dataSnapshot.getRef().removeValue();
                     delete(dataSnapshot.child("title").getValue().toString());
-                    Log.v("알림", "Value 삭제"); //휘발성 database 구현
+                    Log.v("알림", "상품이 폐기됩니다 :: Value 삭제"); //휘발성 database 구현
                 }
                 else{}
             }
@@ -334,8 +340,10 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback,Goo
 
 
         for(int i = 0; i< 100; i++){
-            LatLng addlocation = new LatLng(lat[i],lng[i]);
-            mMap.addMarker(new MarkerOptions().position(addlocation).title(storekind[i]+" / "+storename[i]));
+            if(lat[i]!=0.0){
+                LatLng addlocation = new LatLng(lat[i],lng[i]);
+                mMap.addMarker(new MarkerOptions().position(addlocation).title(storekind[i]+" / "+storename[i]));
+            }
         }
 
 
@@ -349,22 +357,22 @@ public class Mainpage extends FragmentActivity implements OnMapReadyCallback,Goo
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        int temp = Integer.parseInt(marker.getId().substring(1));
+        int tempint = Integer.parseInt(marker.getId().substring(1));
         String store = marker.getTitle();
-        if(temp>0) {
-            temp--;
-            Intent intent = new Intent(getApplicationContext(), MenuDetails.class);
+        if(tempint>0) {
+            Log.v("알림",tempint+"");
+            tempint--;
             Intent detailmenu = new Intent(getApplicationContext(), MenuDetails.class);
-            detailmenu.putExtra("strings",strings[temp]);
+            detailmenu.putExtra("strings",strings[tempint]);
             detailmenu.putExtra("store",store);
-            detailmenu.putExtra("date",date[temp]);
-            detailmenu.putExtra("name",name[temp]);
-            detailmenu.putExtra("price",price[temp]);
-            detailmenu.putExtra("priced",priced[temp]);
-            detailmenu.putExtra("storename",storename[temp]);
-            detailmenu.putExtra("storekind",storekind[temp]);
-            detailmenu.putExtra("lat",lat[temp]);
-            detailmenu.putExtra("lng",lng[temp]);
+            detailmenu.putExtra("date",date[tempint]);
+            detailmenu.putExtra("name",name[tempint]);
+            detailmenu.putExtra("price",price[tempint]);
+            detailmenu.putExtra("priced",priced[tempint]);
+            detailmenu.putExtra("storename",storename[tempint]);
+            detailmenu.putExtra("storekind",storekind[tempint]);
+            detailmenu.putExtra("lat",lat[tempint]);
+            detailmenu.putExtra("lng",lng[tempint]);
             startActivity(detailmenu);
         }
     }

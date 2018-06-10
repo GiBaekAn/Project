@@ -224,7 +224,7 @@ public class InputMenu extends Activity implements View.OnClickListener {
             if(minute<10){minute_s = "0"+minute;}
             String date = year+month_s+day_s+hour_s+minute_s;
 
-            if(foodname.equals("")||saledprice.equals("")||price.equals("")||year==0||month==0||day==0||hour==0||minute==0||lat==0.0||lng==0.0||storename.equals("")||!photo){
+            if(foodname.equals("")||saledprice.equals("")||price.equals("")||year==0||day==0||storename.equals("")||!photo){
                 Toast.makeText(InputMenu.this,
                         "빈 항목이 있는지 확인해주세요.",
                         Toast.LENGTH_LONG).show();
